@@ -7,7 +7,7 @@ import {
   NavTab,
   BrandName,
 } from "./Navbar.styles";
-import Avatar from "@mui/material/Avatar";
+import AvatarMenu from "../AvatarMenu/AvatarMenu.component";
 
 const Navbar = () => {
   return (
@@ -30,7 +30,7 @@ const Navbar = () => {
           <span>一起分購吧！</span>
         </NavTab>
         <div className="avatar">
-          <Avatar sx={{ bgcolor: "#6218fa" }}></Avatar>
+          <AvatarMenu />
         </div>
       </div>
     </NavContainer>
