@@ -15,10 +15,19 @@ const theme = createTheme({
   },
 });
 
-const SSButton = ({ loading, text, variant, color, size, onClickHandler }) => {
+const SSButton = ({
+  type,
+  loading,
+  text,
+  variant,
+  color,
+  size,
+  onClickHandler,
+}) => {
   return loading ? (
     <ThemeProvider theme={theme}>
       <LoadingButton
+        type={type}
         onClick={onClickHandler}
         variant={variant}
         color={color}
@@ -32,6 +41,7 @@ const SSButton = ({ loading, text, variant, color, size, onClickHandler }) => {
   ) : (
     <ThemeProvider theme={theme}>
       <Button
+        type={type}
         onClick={onClickHandler}
         variant={variant}
         color={color}
