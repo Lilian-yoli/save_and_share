@@ -4,6 +4,7 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
+import { useNavigate } from "react-router-dom";
 
 export default function FadeMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -11,11 +12,18 @@ export default function FadeMenu() {
 
   const open = Boolean(anchorEl);
 
+  const navigate = useNavigate();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const getToPage = (destination) => {
+    handleClose();
+    navigate(`/${destination}`);
   };
 
   return (
@@ -41,32 +49,32 @@ export default function FadeMenu() {
         TransitionComponent={Fade}
       >
         {isLoggedIn ? (
-          <>
+          <div>
             <MenuItem onClick={handleClose} className="customized menu-item">
               你的訊息
             </MenuItem>
-            <MenuItem
-              onClick={handleClose}
-              className="customized menu-item"
-            ></MenuItem>
-            <MenuItem
-              onClick={handleClose}
-              className="customized menu-item"
-            ></MenuItem>
-            <MenuItem
-              onClick={handleClose}
-              className="customized menu-item"
-            ></MenuItem>
-          </>
+            <MenuItem onClick={handleClose} className="customized menu-item">
+              發起的分購
+            </MenuItem>
+            <MenuItem onClick={handleClose} className="customized menu-item">
+              加入的分購
+            </MenuItem>
+            <MenuItem onClick={handleClose} className="customized menu-item">
+              登出
+            </MenuItem>
+          </div>
         ) : (
-          <>
+          <div>
             <MenuItem onClick={handleClose} className="customized menu-item">
               登入
             </MenuItem>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem
+              onClick={() => getToPage("sign-up")}
+              className="customized menu-item"
+            >
               註冊
             </MenuItem>
-          </>
+          </div>
         )}
       </Menu>
     </div>
