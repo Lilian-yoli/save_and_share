@@ -10,6 +10,7 @@ import {
 import Card from "../../components/Card/Card.component";
 import Button from "../../components/Button/Button.component";
 import { useNavigate } from "react-router-dom";
+import SearchForm from "../../components/SearchForm/SearchForm.component";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Home = () => {
         <ImgContainer>
           <img src={landingPageImg} alt="a variety of foods" />
         </ImgContainer>
+        <SearchForm />
       </HeroContainer>
       <section>
         <CardsContainer>
