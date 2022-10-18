@@ -9,6 +9,7 @@ import { ThemeProvider } from "styled-components";
 const theme = {
   system: "#3cae9f",
   subSystem: "#285E4D",
+  contrast: "#6218fa",
   white: "snow",
   black: "#333",
 };
