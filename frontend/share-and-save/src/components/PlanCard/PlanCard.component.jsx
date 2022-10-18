@@ -2,7 +2,7 @@ import { PlanCardWrapper } from "./PlanCard.styles";
 import Button from "../../components/Button/Button.component";
 import { useRef } from "react";
 
-const PlanCard = ({ plan }) => {
+const PlanCard = ({ plan, action }) => {
   const { title, fee, duration, features } = plan;
 
   let titleRef = useRef();
@@ -13,6 +13,7 @@ const PlanCard = ({ plan }) => {
     switch (selectedPlan) {
       case "嘗試方案": {
         // TODO: 1. post request to DB 2. popup to notify user and redirect to landing page
+        action();
         break;
       }
       case "月方案": {
