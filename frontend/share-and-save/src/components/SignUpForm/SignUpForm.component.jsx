@@ -4,7 +4,7 @@ import Button from "../Button/Button.component";
 import { string, object, ref } from "yup";
 import { FormfieldWrapper } from "./SignUpForm.styles";
 
-const SignUpForm = () => {
+const SignUpForm = ({ onSubmitHandler }) => {
   const validationSchema = object({
     email: string().email("不符 Email 格式").required("請填寫信箱"),
     name: string().required("請填寫姓名"),
@@ -24,6 +24,7 @@ const SignUpForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // TODO: api request;
+      onSubmitHandler();
     },
   });
 

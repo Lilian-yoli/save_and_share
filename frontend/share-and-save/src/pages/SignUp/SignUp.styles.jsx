@@ -10,8 +10,10 @@ export const LinkToSignInPage = styled(Link)`
 
 export const ContentWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  max-width: 450px;
+  flex-direction: ${(props) => (props.vertical ? "column" : "row")};
+  justify-content: center;
+  gap: ${(props) => props.gap || "0px"};
+  max-width: ${(props) => props.width || "auto"};
   margin: 40px auto 0;
   padding: 0 20px;
 
