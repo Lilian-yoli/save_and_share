@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# mock environment
+ngrok
+ngrok-v3-stable-darwin-amd64.zip
