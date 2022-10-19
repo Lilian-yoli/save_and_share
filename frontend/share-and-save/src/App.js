@@ -5,6 +5,7 @@ import HomePage from "./pages/Home/Home.component";
 import SearchPage from "./pages/Search/Search.component";
 import SharePage from "./pages/Share/Share.component";
 import SignUpPage from "./pages/SignUp/SignUp.component";
+import SignInPage from "./pages/SignIn/SignIn.component";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/share" element={<SharePage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/sign-in" element={<SignInPage />} />
       </Routes>
     </>
   );
