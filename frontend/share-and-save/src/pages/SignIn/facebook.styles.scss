@@ -1,0 +1,17 @@
+.my-facebook-button {
+  background-color: #385499;
+  color: #fff;
+  width: 97%;
+  padding: 12px;
+  border-radius: 20px;
+  position: relative;
+  margin-top: 20px;
+  font-weight: 600;
+  cursor: pointer;
+
+  i {
+    position: absolute;
+    left: 15px;
+    font-size: 16px;
+  }
+}
