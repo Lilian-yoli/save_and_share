@@ -65,7 +65,10 @@ export default function FadeMenu() {
           </div>
         ) : (
           <div>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem
+              onClick={() => getToPage("sign-in")}
+              className="customized menu-item"
+            >
               登入
             </MenuItem>
             <MenuItem
