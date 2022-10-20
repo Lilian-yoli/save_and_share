@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { ContentWrapper } from "../SignUp/SignUp.styles";
+import SignInForm from "../../components/SignInForm/SignInForm.component";
 
 const SignInPage = () => {
   const handleCredentialResponse = (response) => {
@@ -16,14 +17,15 @@ const SignInPage = () => {
 
     google.accounts.id.renderButton(
       document.getElementById("google-login-button"),
-      { theme: "outline", size: "large" } // customization attributes
+      { theme: "theme", width: "450", shape: "pill" } // customization attributes
     );
   }, []);
 
   return (
     <ContentWrapper vertical width="450px">
       <h2>登入</h2>
-      <div id="google-login-button"></div>
+      <SignInForm />
+      <div id="google-login-button" style={{marginTop: '60px'}}></div>
     </ContentWrapper>
   );
 };
