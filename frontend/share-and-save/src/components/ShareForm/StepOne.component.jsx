@@ -32,6 +32,7 @@ const StepOne = ({ onClickHandler }) => {
         let { expiryDate } = values;
         expiryDate = dayjs(expiryDate).format("YYYY-MM-DD");
         // TODO: post request
+        onClickHandler();
       },
     });
 
@@ -99,7 +100,6 @@ const StepOne = ({ onClickHandler }) => {
         </LocalizationProvider>
       </FormfieldWrapper>
       <Button
-        onClickHandler={onClickHandler}
         text="下一步"
         type="submit"
         variant="outlined"
