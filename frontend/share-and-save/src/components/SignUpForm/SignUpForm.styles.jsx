@@ -6,7 +6,7 @@ export const FormfieldWrapper = styled.div`
   max-width: 450px;
   margin: 0 auto;
 
-  button {
+  > button {
     margin-top: 45px;
   }
 `;
