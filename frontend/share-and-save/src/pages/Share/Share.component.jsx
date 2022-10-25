@@ -3,9 +3,11 @@ import StepTwo from "../../components/ShareForm/StepTwo.component";
 import StepThree from "../../components/ShareForm/StepThree.component";
 import { ContentWrapper } from "../SignUp/SignUp.styles";
 import { useState } from "react";
+import Stepper from "../../components/Stepper/Stepper.component";
 
 const SharePage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  // index-based to align with the design of MUI's stepper, which means the first step would correpond to 0, second to 1
+  const [currentStep, setCurrentStep] = useState(0);
 
   const onClickHandler = () => {
     const nextStep = currentStep + 1;
@@ -13,11 +15,12 @@ const SharePage = () => {
   };
 
   return (
-    <ContentWrapper vertical width="450px">
+    <ContentWrapper vertical width="500px">
       <h2>想要發起分購嗎？</h2>
-      {currentStep === 1 && <StepOne onClickHandler={onClickHandler} />}
-      {currentStep === 2 && <StepTwo onClickHandler={onClickHandler} />}
-      {currentStep === 3 && <StepThree onClickHandler={onClickHandler} />}
+      <Stepper activeStep={currentStep} />
+      {currentStep === 0 && <StepOne onClickHandler={onClickHandler} />}
+      {currentStep === 1 && <StepTwo onClickHandler={onClickHandler} />}
+      {currentStep === 2 && <StepThree onClickHandler={onClickHandler} />}
     </ContentWrapper>
   );
 };
