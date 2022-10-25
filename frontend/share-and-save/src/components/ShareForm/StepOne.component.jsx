@@ -82,7 +82,7 @@ const StepOne = ({ onClickHandler }) => {
             onChange={(value) => {
               setFieldValue("expiryDate", Date.parse(value));
             }}
-            inputFormat="MM/DD/YYYY"
+            inputFormat="YYYY/MM/DD"
             value={values.expiryDate}
             label="食物有限期限"
             renderInput={(params) => (
@@ -96,8 +96,8 @@ const StepOne = ({ onClickHandler }) => {
               />
             )}
           />
-          <Uploader color="primary" />
         </LocalizationProvider>
+        <Uploader color="primary" />
       </FormfieldWrapper>
       <Button
         text="下一步"
