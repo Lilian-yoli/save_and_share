@@ -1,6 +1,7 @@
 import StepOne from "../../components/ShareForm/StepOne.component";
 import StepTwo from "../../components/ShareForm/StepTwo.component";
 import StepThree from "../../components/ShareForm/StepThree.component";
+import StepFour from "../../components/ShareForm/StepFour.component";
 import { ContentWrapper } from "../SignUp/SignUp.styles";
 import { useState } from "react";
 import Stepper from "../../components/Stepper/Stepper.component";
@@ -21,6 +22,7 @@ const SharePage = () => {
       {currentStep === 0 && <StepOne onClickHandler={onClickHandler} />}
       {currentStep === 1 && <StepTwo onClickHandler={onClickHandler} />}
       {currentStep === 2 && <StepThree onClickHandler={onClickHandler} />}
+      {currentStep === 3 && <StepFour onClickHandler={onClickHandler} />}
     </ContentWrapper>
   );
 };
