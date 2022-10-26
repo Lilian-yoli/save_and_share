@@ -27,6 +27,7 @@ const SSButton = ({
   color,
   size,
   onClickHandler,
+  className,
 }) => {
   return loading ? (
     <ThemeProvider theme={theme}>
@@ -50,6 +51,7 @@ const SSButton = ({
         variant={variant}
         color={color}
         size={size}
+        className={className}
       >
         {text}
       </Button>

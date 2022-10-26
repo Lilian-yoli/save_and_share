@@ -1,0 +1,14 @@
+label.custom-uploader {
+  font-size: 1rem;
+  justify-content: flex-start;
+  width: fit-content;
+  margin-top: 20px;
+
+  &:hover {
+    background-color: transparent;
+  }
+
+  p {
+    margin-left: 5px;
+  }
+}
