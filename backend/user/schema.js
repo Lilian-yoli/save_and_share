@@ -11,10 +11,13 @@ const signUpSchema = {
                  minLength: 1,
                  maxLength: 50},
       password: {type: "string",
-                 minLength: 1,
-                 maxLength: 50}
+                 minLength: 6,
+                 maxLength: 50},
+      verified_password: {type: "string",
+                          minLength: 6,
+                          maxLength: 50}
     },
-    required: ["email", "username", "password"],
+    required: ["email", "username", "password", "verified_password"],
     additionalProperties: false,
   }
 
