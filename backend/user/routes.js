@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const { wrapAsync } = require("../utils")
-const { signUpFlow, signUpResponse } = require("./service")
-const { insertSignUpToDb } = require("./model")
+const { signUpFlow } = require("./service")
+
 
 
 router.route('/user/signup')
-.post(wrapAsync(signUpFlow), wrapAsync(insertSignUpToDb), wrapAsync(signUpResponse));
+.post(wrapAsync(signUpFlow));
 
 module.exports = router;
