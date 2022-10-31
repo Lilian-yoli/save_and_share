@@ -16,13 +16,14 @@ const theme = {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  // comment out the strict mode, or the tappay form would rerender.
+  // <React.StrictMode>
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </BrowserRouter>
+  // </React.StrictMode>
 );
 
 reportWebVitals();
