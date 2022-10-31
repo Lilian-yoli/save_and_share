@@ -6,6 +6,7 @@ import SearchPage from "./pages/Search/Search.component";
 import SharePage from "./pages/Share/Share.component";
 import SignUpPage from "./pages/SignUp/SignUp.component";
 import SignInPage from "./pages/SignIn/SignIn.component";
+import TransactionPage from "./pages/Transaction/Transaction.component";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/share" element={<SharePage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/transaction" element={<TransactionPage />} />
       </Routes>
     </>
   );
