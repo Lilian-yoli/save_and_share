@@ -30,6 +30,7 @@ const validateSignUp = (signUpBody) => {
     const valid = validate(signUpBody)
     const { password, verified_password } = signUpBody
     if (!valid || password != verified_password) {
+        console.log(validate.errors)
         return {errorMsg: "Format error for sign up info."}
     } else {
         return {errorMsg: null}
