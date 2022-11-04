@@ -3,9 +3,11 @@ const express = require("express");
 const app = express();
 const { PORT, API_VERSION } = process.env;
 const bodyParser = require("body-parser");
+const cors = require("cors")
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extend: true }));
+app.use(cors({origin: '*'}));
 
 
 // api route
