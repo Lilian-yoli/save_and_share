@@ -3,11 +3,17 @@ const express = require("express");
 const app = express();
 const { PORT, API_VERSION } = process.env;
 const bodyParser = require("body-parser");
-const cors = require("cors")
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extend: true }));
-app.use(cors({origin: '*'}));
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 
 // api route
