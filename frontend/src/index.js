@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { UserProvider } from "./contexts/userContext";
 
 const theme = {
   system: "#3cae9f",
@@ -20,7 +21,9 @@ root.render(
   // <React.StrictMode>
   <BrowserRouter>
     <ThemeProvider theme={theme}>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </ThemeProvider>
   </BrowserRouter>
   // </React.StrictMode>
