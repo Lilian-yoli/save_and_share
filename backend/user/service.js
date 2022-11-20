@@ -1,8 +1,8 @@
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats")
 const ajv = new Ajv({allErrors:true}) // options can be passed, e.g. {allErrors: true}
-const  { signUpSchema } = require("./schema")
-const { insertUserDataToDb, selectUserByEmail } = require("./model")
+const  { signUpSchema, membershipTypeSchema } = require("./schema")
+const { insertUserDataToDb, selectUserByEmail, updateMembershipType } = require("./model")
 const bcrypt = require("bcrypt")
 const salt = parseInt(process.env.BCRYPT_SALT)
 const jwt = require("jsonwebtoken")
@@ -40,6 +40,16 @@ const validateSignUp = (signUpBody) => {
     } else {
         return {errorMsg: null}
     }      
+}
+
+
+const validateMembershipType = (membershipTypeObject) => {
+  const validate = ajv.compile(membershipTypeSchema)
+  const valid = validate(membershipTypeObject)
+  if (!valid) {
+    return {error: "Membership type format error."}
+  }
+  return {error: null}
 }
 
 
@@ -195,7 +205,27 @@ const updateAccessToken = (userInfo) => {
 }
 
 
+const updateMembershipTypeFlow = async (req, res) => {
+  try{
+    const dataValidation = validateMembershipType(req.body)
+    if (dataValidation.error){
+      return res.status(400).send(dataValidation)
+    }
+    const membershipType = req.body.membership_type
+    const userId = req.user.id
+    const updatedMembershipType = await updateMembershipType(userId, membershipType)
+    console.log({updatedMembershipType: updatedMembershipType})
+    return res.status(200).send(updatedMembershipType[0])
+  } catch (error) {
+    console.log(error.message)
+    return res.status(400).send("Something went wrong from updating membership_type flow.")
+  }
+  
+}
+
+
 module.exports = {
     signUpFlow,
-    signInFlow
+    signInFlow,
+    updateMembershipTypeFlow
 }

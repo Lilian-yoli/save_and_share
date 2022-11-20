@@ -12,21 +12,26 @@ const wrapAsync = (fn) => {
 
 
 const authentication = () => {
-  return function (req, res, next){
+  return async function (req, res, next){
+    console.log("Authorization")
     const rawAccessToken = req.get("Authorization")
     if (!rawAccessToken) {
       return res.status(401).send({error: "Unauthorized."})
     }
     const accessToken = rawAccessToken.replace("Bearer ", "")
     try {
-      const userEmail = jwt.verify(accessToken, TOKEN_SECRET).email
-      const userInfo = selectUserByEmail(userEmail)
+      const user = jwt.verify(accessToken, TOKEN_SECRET)
+      const userInfo = await selectUserByEmail(user.email)
+      req.user = user
+      req.user.id = userInfo[0].id
+      console.log({requser: req.user})
       if (userInfo.length < 1) {
         return res.status(403).send({error: "Forbidden."})
       } else {
         next()
       }
     } catch (error) {
+      console.log({authentication: error})
       return res.status(403).send({error: "Forbidden."})
     }
   } 

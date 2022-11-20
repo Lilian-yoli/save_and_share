@@ -34,10 +34,28 @@ const insertUserDataToDb = async (signUpDataToDb) => {
             throw error
         }
 }
+
+
+const updateMembershipType = async (id, membershipType) => {
+    try{
+        console.log("updateMembershipType")
+        const updateQuery = "UPDATE members SET membership_type = $1 where id = $2 RETURNING membership_type"
+        const updatedResult = 
+            await pgsqlPool.query(updateQuery, [membershipType, id])
+                .then((result) => {             
+                    return result.rows})
+                .catch(e => console.error(e.stack))
+                return updatedResult
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
     
  
 module.exports = {
     insertUserDataToDb,
-    selectUserByEmail
+    selectUserByEmail,
+    updateMembershipType
 }
 

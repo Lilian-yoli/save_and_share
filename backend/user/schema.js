@@ -21,6 +21,17 @@ const signUpSchema = {
     additionalProperties: false,
   }
 
+
+const membershipTypeSchema = {
+  type: "object",
+  properties: {
+    membership_type: {enum: ["monthly_plan", "annual_plan"]}
+  },
+  required: ["membership_type"],
+  additionalProperties: false
+}
+
   module.exports = {
-    signUpSchema
+    signUpSchema,
+    membershipTypeSchema
 }
