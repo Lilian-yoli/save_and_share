@@ -2,26 +2,29 @@ const Ajv = require("ajv")
 const addFormats = require("ajv-formats")
 const ajv = new Ajv({allErrors:true}) // options can be passed, e.g. {allErrors: true}
 const  { signUpSchema } = require("./schema")
-const { insertSignUpToDb, selectUserByEmail } = require("./model")
+const { insertUserDataToDb, selectUserByEmail } = require("./model")
 const bcrypt = require("bcrypt")
 const salt = parseInt(process.env.BCRYPT_SALT)
 const jwt = require("jsonwebtoken")
 const { TOKEN_EXPIRED, TOKEN_SECRET } = process.env
+const axios = require("axios")
 addFormats(ajv)
 
 
 const signUpFlow = async (req, res) => {
     const signUpBody = req.body
+    const { email, username, password } = signUpBody
     const validationResult = validateSignUp(signUpBody)    
     if (validationResult.errorMsg) {
         return res.status(400).send({error: validationResult})
     }
-    const existedUserData = await selectUserByEmail(signUpBody.email)
+    const existedUserData = await selectUserByEmail(email)
     if (existedUserData.length > 0){
         return res.status(400).send({error: {errorMsg: "Duplicated Email."}})
     }
-    const signUpDataToDb = processSignUpData(signUpBody)
-    const userData = await insertSignUpToDb(signUpDataToDb)
+    const signUpDataToDb = 
+        processInsertedUserData(email, username, password, "native")
+    const userData = await insertUserDataToDb(signUpDataToDb)
     const responseUserData = formResUserInfo(userData[0])
     return res.status(200).send({data: responseUserData})
 }
@@ -49,15 +52,19 @@ const generateAccessToken = (provider, username, email) => {
 }
 
 
-const processSignUpData = (signUpBody) => {
-    const { email, username, password } = signUpBody
+const processInsertedUserData = (email, username, password, provider) => {
+    console.log({provider: provider})
     const now = new Date()
-    const accessToken = generateAccessToken("native", username, email)
-    const dataToDb = {email: email,
-                      tableData: [email, bcrypt.hashSync(password, salt), 
-                                  username, now, now, "standard", "native", 
-                                  TOKEN_EXPIRED, accessToken]}
-    return dataToDb
+    const accessToken = generateAccessToken(provider, username, email)
+    if (provider === "native"){
+        return {tableData: [email, bcrypt.hashSync(password, salt), 
+                            username, now, now, "standard", provider, 
+                            TOKEN_EXPIRED, accessToken]}
+    } else {
+        return {tableData: [email, "", 
+                            username, now, now, "standard", provider, 
+                            TOKEN_EXPIRED, accessToken]}
+    }
 }
 
 
@@ -71,23 +78,114 @@ const formResUserInfo = (userInfo) => {
 }
 
 
+const getFBUser = async (access_token) => {
+  try {
+    const { data } = await axios({
+        url: "https://graph.facebook.com/me",
+        method: "get",
+        params: {
+            fields: ["id", "email", "name"].join(","),
+            access_token: access_token
+        }
+    })
+    return data
+  } catch (error) {
+    console.log({getFBUser: error})
+    throw error
+  }
+}
+
+
+const getGoogleUser = async (access_token) => {
+  const googleUser = await axios
+  .get(
+    "https://www.googleapis.com/oauth2/v2/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  ) 
+  .then((res) => res.data)
+  .catch((error) => {
+    console.error(`Failed to fetch user`);
+    throw new Error(error.message);
+  });
+  return googleUser
+}
+
+
+const thirdPartySigninFlow = async (signInInfo) => {
+  try {
+  const getUserDataByProvider = async (signInInfo) => {
+    const { provider, access_token } = signInInfo
+    if (provider === "facebook"){
+      const userData = await getFBUser(access_token)
+      return userData
+    } else if (provider === "google") {
+      const userData = await getGoogleUser(access_token)
+      return userData
+    }
+  }
+  const reqUserData = await getUserDataByProvider(signInInfo)
+
+  console.log({thirdPartySigninFlow: reqUserData})
+    // const reqUserData = await getFBUserData(signInInfo.access_token)
+    const { email, name } = reqUserData
+    const existedUserData = await selectUserByEmail(email)
+    console.log({existedUserData: existedUserData})
+    if (existedUserData.length == 0){
+        const userDataForDb = 
+            processInsertedUserData(email, name, null, signInInfo.provider)
+        const userData = await insertUserDataToDb(userDataForDb)
+        console.log({userData: userData})
+        return formResUserInfo(userData[0])
+    }
+    return formResUserInfo(existedUserData[0])
+  } catch (error) {
+    console.log({thirdPartySigninFlow: error})
+    return {error: "Something went wrong with third party authentication."}
+  } 
+}
+
+
+const runSigninFlowByProvider = async (signInInfo) => {
+    const { provider } = signInInfo
+    if (provider === "facebook" || provider === "google") {
+        return await thirdPartySigninFlow(signInInfo)
+    } else if (provider === "native") {
+        return await nativeSigninFlow(signInInfo)
+    }
+}
+
 const signInFlow = async (req, res) => {
-    const wrongInfoMsg = {errorMsg: "Invalid information."}
-    const userInfo = await selectUserByEmail(req.body.email)
+    const signInInfo = req.body
+    const responseData = await runSigninFlowByProvider(signInInfo)
+   
+    console.log({responseData: responseData})
+    if (responseData.error) {
+        return res.status(400).send(responseData)
+    }
+    return res.status(200).send(responseData)
+}
+
+
+const nativeSigninFlow = async (signInInfo) => {
+    const { email, password } = signInInfo
+    const userInfo = await selectUserByEmail(email)
+    console.log({userInfo: userInfo})
     if (userInfo.length < 1) {
-        return res.status(400).send({error: wrongInfoMsg})
+        return {error: "The email has not yet registered."}
     }
     const passwordFromDb = userInfo[0].password
     const isPasswordMatch = 
-        bcrypt.compareSync(req.body.password, passwordFromDb)
+        bcrypt.compareSync(password, passwordFromDb)
     if (!isPasswordMatch) {
-        return res.status(400).send({error: wrongInfoMsg})
+        return {error: "Invalid information."}
     }
     const resUserData = formResUserInfo(userInfo[0])
-    const updatedResUserData = updateAccessToken(resUserData)
-    return res.status(200).send({data: updatedResUserData})
+    return updateAccessToken(resUserData)
 }
-
 
 const updateAccessToken = (userInfo) => {
     const { provider, username, email } = userInfo.user
