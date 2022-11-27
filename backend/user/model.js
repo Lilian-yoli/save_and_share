@@ -55,13 +55,29 @@ const insertUserMemberType = async (memberTypeDataToDb) => {
   }
 };
 
-const updateMembershipType = async (id, membershipType) => {
+const updateMemberType = async (memberTypeDataToDb) => {
   try {
     console.log("updateMembershipType");
+    const {
+      userId,
+      memberType,
+      shared_times,
+      shared_limit_times,
+      expiredDatetime,
+      updated,
+    } = memberTypeDataToDb;
+    console.log({ member_type: memberType });
     const updateQuery =
-      "UPDATE members SET membership_type = $1 where id = $2 RETURNING membership_type";
+      "UPDATE member_types SET member_type = $1, shared_times = $2, shared_limit_times = $3, expired_datetime = $4, updated = $5 where user_id = $6 RETURNING member_type";
     const updatedResult = await pgsqlPool
-      .query(updateQuery, [membershipType, id])
+      .query(updateQuery, [
+        memberType,
+        shared_times,
+        shared_limit_times,
+        expiredDatetime,
+        updated,
+        userId,
+      ])
       .then((result) => {
         return result.rows;
       })
@@ -76,6 +92,6 @@ const updateMembershipType = async (id, membershipType) => {
 module.exports = {
   insertUserDataToDb,
   selectUserByEmail,
-  updateMembershipType,
+  updateMemberType,
   insertUserMemberType,
 };

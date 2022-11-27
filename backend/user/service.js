@@ -5,7 +5,7 @@ const { signUpSchema, membershipTypeSchema } = require("./schema");
 const {
   insertUserDataToDb,
   selectUserByEmail,
-  updateMembershipType,
+  updateMemberType,
   insertUserMemberType,
 } = require("./model");
 const bcrypt = require("bcrypt");
@@ -239,35 +239,51 @@ const updateAccessToken = (userInfo) => {
   return userInfo;
 };
 
-const test = (req, res) => {
-  console.log("connected to react!");
-  res.send({ message: "connected to react!" });
-};
-
-const updateMembershipTypeFlow = async (req, res) => {
+const updateMemberTypeFlow = async (req, res) => {
   try {
     const dataValidation = validateMembershipType(req.body);
     if (dataValidation.error) {
       return res.status(400).send(dataValidation);
     }
-    const membershipType = req.body.membership_type;
+    const memberType = req.body.membership_type;
     const userId = req.user.id;
-    const updatedMembershipType = await updateMembershipType(
-      userId,
-      membershipType
-    );
-    console.log({ updatedMembershipType: updatedMembershipType });
-    return res.status(200).send(updatedMembershipType[0]);
+    const memberTypeDataToDb = formMemberTypeDataToUpdate(userId, memberType);
+    const updatedMemberType = await updateMemberType(memberTypeDataToDb);
+    if (updatedMemberType[0].member_type !== memberType) {
+      throw new Error("The inserted result of member_type is not correct.");
+    }
+    return res.status(200).send({ data: "Membership type have been updated!" });
   } catch (error) {
-    console.log(error.message);
-    return res
-      .status(400)
-      .send("Something went wrong from updating membership_type flow.");
+    return res.status(400).send({
+      error: "Something went wrong from updating membership_type flow.",
+    });
+  }
+};
+
+const formMemberTypeDataToUpdate = (id, memberType) => {
+  const now = new Date();
+  const memberTypeInfo = {
+    userId: id,
+    memberType: memberType,
+    shared_times: 0,
+    shared_limit_times: 10,
+    updated: now,
+  };
+  if (memberType === "annual_plan") {
+    const nextYear = new Date().getFullYear() + 1;
+    const expiredDatetime = new Date(new Date().setFullYear(nextYear));
+    memberTypeInfo.expiredDatetime = expiredDatetime;
+    return memberTypeInfo;
+  } else if (memberType === "monthly_plan") {
+    const nextMonth = new Date().getMonth() + 1;
+    const expiredDatetime = new Date(new Date().setMonth(nextMonth));
+    memberTypeInfo.expiredDatetime = expiredDatetime;
+    return memberTypeInfo;
   }
 };
 
 module.exports = {
   signUpFlow,
   signInFlow,
-  updateMembershipTypeFlow,
+  updateMemberTypeFlow,
 };
