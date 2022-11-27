@@ -6,6 +6,7 @@ const {
   insertUserDataToDb,
   selectUserByEmail,
   updateMembershipType,
+  insertUserMemberType,
 } = require("./model");
 const bcrypt = require("bcrypt");
 const salt = parseInt(process.env.BCRYPT_SALT);
@@ -15,25 +16,41 @@ const axios = require("axios");
 addFormats(ajv);
 
 const signUpFlow = async (req, res) => {
-  const signUpBody = req.body;
-  const { email, username, password } = signUpBody;
-  const validationResult = validateSignUp(signUpBody);
-  if (validationResult.errorMsg) {
-    return res.status(400).send({ error: validationResult });
+  try {
+    const signUpBody = req.body;
+    const { email, username, password } = signUpBody;
+    const validationResult = validateSignUp(signUpBody);
+    if (validationResult.errorMsg) {
+      return res.status(400).send({ error: validationResult });
+    }
+    const existedUserData = await selectUserByEmail(email);
+    if (existedUserData.length > 0) {
+      return res.status(400).send({ error: "Duplicated Email." });
+    }
+    const signUpDataToDb = processInsertedUserData(
+      email,
+      username,
+      password,
+      "native"
+    );
+    const userData = await insertUserDataToDb(signUpDataToDb);
+    console.log({ userDataId: userData[0].id });
+    const memberTypeDataToDb = formMemberTypeDataToDb(
+      userData[0].id,
+      "standard"
+    );
+    const memberTypeData = await insertUserMemberType(memberTypeDataToDb);
+    if (memberTypeData[0].length < 1) {
+      return res
+        .status(500)
+        .send({ error: "Member type failed to insert to DB." });
+    }
+    const responseUserData = formResUserInfo(userData[0]);
+    return res.status(200).send({ data: responseUserData });
+  } catch (error) {
+    console.log({ signUpFlowError: error });
+    throw error;
   }
-  const existedUserData = await selectUserByEmail(email);
-  if (existedUserData.length > 0) {
-    return res.status(400).send({ error: { errorMsg: "Duplicated Email." } });
-  }
-  const signUpDataToDb = processInsertedUserData(
-    email,
-    username,
-    password,
-    "native"
-  );
-  const userData = await insertUserDataToDb(signUpDataToDb);
-  const responseUserData = formResUserInfo(userData[0]);
-  return res.status(200).send({ data: responseUserData });
 };
 
 const validateSignUp = (signUpBody) => {
@@ -70,38 +87,29 @@ const generateAccessToken = (provider, username, email) => {
 };
 
 const processInsertedUserData = (email, username, password, provider) => {
-  console.log({ provider: provider });
   const now = new Date();
   const accessToken = generateAccessToken(provider, username, email);
+  const tableData = [
+    email,
+    username,
+    now,
+    now,
+    provider,
+    TOKEN_EXPIRED,
+    accessToken,
+  ];
   if (provider === "native") {
-    return {
-      tableData: [
-        email,
-        bcrypt.hashSync(password, salt),
-        username,
-        now,
-        now,
-        "standard",
-        provider,
-        TOKEN_EXPIRED,
-        accessToken,
-      ],
-    };
+    tableData.push(bcrypt.hashSync(password, salt));
+    return { tableData: tableData };
   } else {
-    return {
-      tableData: [
-        email,
-        "",
-        username,
-        now,
-        now,
-        "standard",
-        provider,
-        TOKEN_EXPIRED,
-        accessToken,
-      ],
-    };
+    tableData.push("");
+    return { tableData: tableData };
   }
+};
+
+const formMemberTypeDataToDb = (id, memberType) => {
+  const now = new Date();
+  return [id, memberType, 0, 0, null, now, now];
 };
 
 const formResUserInfo = (userInfo) => {

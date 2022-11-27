@@ -16,13 +16,14 @@ const selectUserByEmail = async (email) => {
   }
 };
 
-// TODO: 2. replace promise to async await
+// TODO: 1. use transaction to avoid race condition
+// 2. replace promise to async await
 const insertUserDataToDb = async (signUpDataToDb) => {
   try {
     console.log("insertUserDataToDb");
     const { tableData } = signUpDataToDb;
     const insertQuery =
-      "INSERT INTO members (email, password, username, created, updated, membership_type, provider, token_expired, access_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
+      "INSERT INTO members (email, username, created, updated, provider, token_expired, access_token, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
     const insertedResult = await pgsqlPool
       .query(insertQuery, tableData)
       .then((result) => {
@@ -32,6 +33,24 @@ const insertUserDataToDb = async (signUpDataToDb) => {
     return insertedResult;
   } catch (error) {
     console.log({ insertUserDataToDb: error });
+    throw error;
+  }
+};
+
+const insertUserMemberType = async (memberTypeDataToDb) => {
+  try {
+    console.log("insertUserMemberType");
+    const insertQuery =
+      "INSERT INTO member_types (user_id, member_type, shared_times, shared_limit_times, expired_datetime, created, updated) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+    const insertedResult = await pgsqlPool
+      .query(insertQuery, memberTypeDataToDb)
+      .then((result) => {
+        return result.rows;
+      })
+      .catch((e) => console.error(e.stack));
+    return insertedResult;
+  } catch (error) {
+    console.log({ insertUserMemberType: error });
     throw error;
   }
 };
@@ -58,4 +77,5 @@ module.exports = {
   insertUserDataToDb,
   selectUserByEmail,
   updateMembershipType,
+  insertUserMemberType,
 };
