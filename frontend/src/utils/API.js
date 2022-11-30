@@ -1,11 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const domain = "http://54.248.36.249/api";
-const version = "1.0";
-
 const API = axios.create({
-  baseURL: `${domain}/${version}`,
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",

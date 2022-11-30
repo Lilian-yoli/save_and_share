@@ -8,6 +8,7 @@ import { userContext } from "../../contexts/userContext";
 
 const SignInPage = () => {
   const { setCurrentUser } = useContext(userContext);
+  const FB_ID = process.env.REACT_APP_FACEBOOK
 
   const handleCredentialResponse = async (response) => {
     try {
@@ -23,8 +24,7 @@ const SignInPage = () => {
   useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
-      client_id:
-        "796720117989-9a41ji9c7saef2hlhmfd1jlv464fhkoh.apps.googleusercontent.com",
+      client_id: process.env.REACT_APP_GOOGLE,
       callback: handleCredentialResponse,
     });
 
@@ -53,7 +53,7 @@ const SignInPage = () => {
       <SignInForm />
       <div id="google-login-button" style={{ marginTop: "60px" }}></div>
       <FacebookLogin
-        appId="642590437217919"
+        appId={FB_ID}
         autoLoad={true}
         fields="name,email,picture"
         onClick={componentClicked}
