@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import { useNavigate } from "react-router-dom";
+import { userContext } from "../../contexts/userContext";
+import Cookies from "js-cookie";
 
 export default function FadeMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const {
+    currentUser: { isLoggedIn },
+    setCurrentUser,
+  } = useContext(userContext);
 
   const open = Boolean(anchorEl);
 
@@ -24,6 +30,11 @@ export default function FadeMenu() {
   const getToPage = (destination) => {
     handleClose();
     navigate(`/${destination}`);
+  };
+
+  const logOut = () => {
+    setCurrentUser({ id: "", isLoggedIn: false });
+    Cookies.remove("Share&SaveToken");
   };
 
   return (
@@ -59,7 +70,7 @@ export default function FadeMenu() {
             <MenuItem onClick={handleClose} className="customized menu-item">
               加入的分購
             </MenuItem>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem onClick={logOut} className="customized menu-item">
               登出
             </MenuItem>
           </div>
