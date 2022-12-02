@@ -252,7 +252,10 @@ const updateMemberTypeFlow = async (req, res) => {
     if (updatedMemberType[0].member_type !== memberType) {
       throw new Error("The inserted result of member_type is not correct.");
     }
-    return res.status(200).send({ data: "Membership type have been updated!" });
+    return res.status(200).send({
+      user_id: updatedMemberType[0].user_id,
+      message: "Membership type have been updated!",
+    });
   } catch (error) {
     return res.status(400).send({
       error: "Something went wrong from updating membership_type flow.",

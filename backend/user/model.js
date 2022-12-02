@@ -66,9 +66,8 @@ const updateMemberType = async (memberTypeDataToDb) => {
       expiredDatetime,
       updated,
     } = memberTypeDataToDb;
-    console.log({ member_type: memberType });
     const updateQuery =
-      "UPDATE member_types SET member_type = $1, shared_times = $2, shared_limit_times = $3, expired_datetime = $4, updated = $5 where user_id = $6 RETURNING member_type";
+      "UPDATE member_types SET member_type = $1, shared_times = $2, shared_limit_times = $3, expired_datetime = $4, updated = $5 where user_id = $6 RETURNING user_id, member_type";
     const updatedResult = await pgsqlPool
       .query(updateQuery, [
         memberType,
