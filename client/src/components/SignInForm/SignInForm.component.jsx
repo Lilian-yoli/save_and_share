@@ -5,7 +5,7 @@ import Button from "../Button/Button.component";
 import { FormfieldWrapper } from "../SignUpForm/SignUpForm.styles";
 import { POST } from "../../utils/API";
 import convertErrorMessages from "../../utils/errorMessages";
-import Dialog from "../../components/Dialog/Dialog.component";
+import Dialog from "../Dialog/Dialog.component";
 import { useState, useContext } from "react";
 import { userContext } from "../../contexts/userContext";
 import Cookies from "js-cookie";

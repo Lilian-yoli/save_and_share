@@ -2,10 +2,12 @@
   "name": "share-and-save",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8877",
+  "proxy": "http://54.248.36.249/",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.10.16",
+    "@mui/lab": "^5.0.0-alpha.110",
     "@mui/material": "^5.10.7",
     "@mui/styled-engine-sc": "^5.10.6",
     "@mui/x-date-pickers": "^5.0.5",
