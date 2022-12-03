@@ -22,7 +22,7 @@ exports.up = function (db) {
   var filePath = path.join(
     __dirname,
     "sqls",
-    "20221127072333-alter-member-table-delete-member-type-up.sql"
+    "20221105112536-create-members-table-up.sql"
   );
   return new Promise(function (resolve, reject) {
     fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
@@ -40,7 +40,7 @@ exports.down = function (db) {
   var filePath = path.join(
     __dirname,
     "sqls",
-    "20221127072333-alter-member-table-delete-member-type-down.sql"
+    "20221105112536-create-members-table-down.sql"
   );
   return new Promise(function (resolve, reject) {
     fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
