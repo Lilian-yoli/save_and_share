@@ -1,0 +1,339 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Save & Share User Api Socs",
+    "termsOfService": "http://swagger.io/terms/",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://54.248.36.249/api/1.0"
+    }
+  ],
+  "paths": {
+    "/user/signup": {
+      "post": {
+        "tags": [
+          "signup"
+        ],
+        "summary": "User register their email and password with username",
+        "description": "User register their email and password with username",
+        "operationId": "signup",
+        "requestBody": {
+          "description": "save user's email, password and username",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/signup"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Duplicated Email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/signin": {
+      "post": {
+        "tags": [
+          "signin"
+        ],
+        "summary": "Check user's input of email & password",
+        "description": "Check user's input of email & password",
+        "operationId": "signin",
+        "requestBody": {
+          "description": "User provide email, password and provider for server check",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/signin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update-membership-type": {
+      "post": {
+        "tags": [
+          "update-membership-type"
+        ],
+        "summary": "Update user's membership type",
+        "description": "Update user's membership type",
+        "operationId": "update-membership-type",
+        "requestBody": {
+          "description": "Update membership type based on user's choice",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateMembershipType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/responseMembershipType"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input from user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Membership type format error."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "signup": {
+        "required": [
+          "email",
+          "username",
+          "password",
+          "verified_password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "test_user"
+          },
+          "password": {
+            "type": "string",
+            "example": "testing"
+          },
+          "verified_password": {
+            "type": "string",
+            "example": "testing"
+          }        
+        }
+      },
+      "signin": {
+        "required": [
+          "provider",
+          "email",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "test_user"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Facebook"
+          }       
+        }
+      },
+      "userDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "provider": {
+            "type": "string",
+            "example": "native"
+          },
+          "username": {
+            "type": "string",
+            "example": "test_user"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          }
+        }
+      },
+      "signupData": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "access_token"
+          },
+          "token_expired": {
+            "type": "string",
+            "example": "86400"
+          },
+          "user": {
+            "$ref": "#/components/schemas/userDetail"
+          }
+        }
+      },
+      "userInfo": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/signupData"
+          }
+        }
+      },
+      "updateMembershipType": {
+        "type": "object",
+        "properties": {
+          "membership_type": {
+            "type": "string",
+            "example": "monthly_plan"
+          }
+        }
+      },
+      "responseMembershipType": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "message": {
+            "type": "string",
+            "example": "Membership type have been updated!"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "##default"
+        }
+      }
+    }
+  }
+}  
