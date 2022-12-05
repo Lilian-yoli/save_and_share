@@ -192,7 +192,7 @@ const thirdPartySigninFlow = async (signInInfo) => {
     return formResUserInfo(existedUserData[0]);
   } catch (error) {
     console.log({ thirdPartySigninFlow: error });
-    return { error: "Something went wrong with third party authentication." };
+    throw error;
   }
 };
 
@@ -211,25 +211,30 @@ const signInFlow = async (req, res) => {
 
   console.log({ responseData: responseData });
   if (responseData.error) {
-    return res.status(400).send(responseData);
+    return res.status(401).send(responseData);
   }
   return res.status(200).send(responseData);
 };
 
 const nativeSigninFlow = async (signInInfo) => {
-  const { email, password } = signInInfo;
-  const userInfo = await selectUserByEmail(email);
-  console.log({ userInfo: userInfo });
-  if (userInfo.length < 1) {
-    return { error: "The email has not yet registered." };
+  try {
+    const { email, password } = signInInfo;
+    const userInfo = await selectUserByEmail(email);
+    console.log({ userInfo: userInfo });
+    if (userInfo.length < 1) {
+      return { error: "The email has not yet registered." };
+    }
+    const passwordFromDb = userInfo[0].password;
+    const isPasswordMatch = bcrypt.compareSync(password, passwordFromDb);
+    if (!isPasswordMatch) {
+      return { error: "Invalid information." };
+    }
+    const resUserData = formResUserInfo(userInfo[0]);
+    return updateAccessToken(resUserData);
+  } catch (error) {
+    console.log({ nativeSigninFlow: error });
+    throw error;
   }
-  const passwordFromDb = userInfo[0].password;
-  const isPasswordMatch = bcrypt.compareSync(password, passwordFromDb);
-  if (!isPasswordMatch) {
-    return { error: "Invalid information." };
-  }
-  const resUserData = formResUserInfo(userInfo[0]);
-  return updateAccessToken(resUserData);
 };
 
 const updateAccessToken = (userInfo) => {
@@ -257,9 +262,8 @@ const updateMemberTypeFlow = async (req, res) => {
       message: "Membership type have been updated!",
     });
   } catch (error) {
-    return res.status(400).send({
-      error: "Something went wrong from updating membership_type flow.",
-    });
+    console.log({ updateMemberTypeFlow: error });
+    throw error;
   }
 };
 
