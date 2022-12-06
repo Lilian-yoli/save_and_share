@@ -5,7 +5,8 @@ const { signUpSchema, membershipTypeSchema } = require("./schema");
 const {
   insertUserDataToDb,
   selectUserByEmail,
-  updateMembershipType,
+  updateMemberType,
+  insertUserMemberType,
 } = require("./model");
 const bcrypt = require("bcrypt");
 const salt = parseInt(process.env.BCRYPT_SALT);
@@ -15,25 +16,41 @@ const axios = require("axios");
 addFormats(ajv);
 
 const signUpFlow = async (req, res) => {
-  const signUpBody = req.body;
-  const { email, username, password } = signUpBody;
-  const validationResult = validateSignUp(signUpBody);
-  if (validationResult.errorMsg) {
-    return res.status(400).send({ error: validationResult });
+  try {
+    const signUpBody = req.body;
+    const { email, username, password } = signUpBody;
+    const validationResult = validateSignUp(signUpBody);
+    if (validationResult.errorMsg) {
+      return res.status(400).send({ error: validationResult });
+    }
+    const existedUserData = await selectUserByEmail(email);
+    if (existedUserData.length > 0) {
+      return res.status(400).send({ error: "Duplicated Email." });
+    }
+    const signUpDataToDb = processInsertedUserData(
+      email,
+      username,
+      password,
+      "native"
+    );
+    const userData = await insertUserDataToDb(signUpDataToDb);
+    console.log({ userDataId: userData[0].id });
+    const memberTypeDataToDb = formMemberTypeDataToDb(
+      userData[0].id,
+      "standard"
+    );
+    const memberTypeData = await insertUserMemberType(memberTypeDataToDb);
+    if (memberTypeData[0].length < 1) {
+      return res
+        .status(500)
+        .send({ error: "Member type failed to insert to DB." });
+    }
+    const responseUserData = formResUserInfo(userData[0]);
+    return res.status(200).send({ data: responseUserData });
+  } catch (error) {
+    console.log({ signUpFlowError: error });
+    throw error;
   }
-  const existedUserData = await selectUserByEmail(email);
-  if (existedUserData.length > 0) {
-    return res.status(400).send({ error: { errorMsg: "Duplicated Email." } });
-  }
-  const signUpDataToDb = processInsertedUserData(
-    email,
-    username,
-    password,
-    "native"
-  );
-  const userData = await insertUserDataToDb(signUpDataToDb);
-  const responseUserData = formResUserInfo(userData[0]);
-  return res.status(200).send({ data: responseUserData });
 };
 
 const validateSignUp = (signUpBody) => {
@@ -70,38 +87,29 @@ const generateAccessToken = (provider, username, email) => {
 };
 
 const processInsertedUserData = (email, username, password, provider) => {
-  console.log({ provider: provider });
   const now = new Date();
   const accessToken = generateAccessToken(provider, username, email);
+  const tableData = [
+    email,
+    username,
+    now,
+    now,
+    provider,
+    TOKEN_EXPIRED,
+    accessToken,
+  ];
   if (provider === "native") {
-    return {
-      tableData: [
-        email,
-        bcrypt.hashSync(password, salt),
-        username,
-        now,
-        now,
-        "standard",
-        provider,
-        TOKEN_EXPIRED,
-        accessToken,
-      ],
-    };
+    tableData.push(bcrypt.hashSync(password, salt));
+    return { tableData: tableData };
   } else {
-    return {
-      tableData: [
-        email,
-        "",
-        username,
-        now,
-        now,
-        "standard",
-        provider,
-        TOKEN_EXPIRED,
-        accessToken,
-      ],
-    };
+    tableData.push("");
+    return { tableData: tableData };
   }
+};
+
+const formMemberTypeDataToDb = (id, memberType) => {
+  const now = new Date();
+  return [id, memberType, 0, 0, null, now, now];
 };
 
 const formResUserInfo = (userInfo) => {
@@ -184,7 +192,7 @@ const thirdPartySigninFlow = async (signInInfo) => {
     return formResUserInfo(existedUserData[0]);
   } catch (error) {
     console.log({ thirdPartySigninFlow: error });
-    return { error: "Something went wrong with third party authentication." };
+    throw error;
   }
 };
 
@@ -203,25 +211,30 @@ const signInFlow = async (req, res) => {
 
   console.log({ responseData: responseData });
   if (responseData.error) {
-    return res.status(400).send(responseData);
+    return res.status(401).send(responseData);
   }
   return res.status(200).send(responseData);
 };
 
 const nativeSigninFlow = async (signInInfo) => {
-  const { email, password } = signInInfo;
-  const userInfo = await selectUserByEmail(email);
-  console.log({ userInfo: userInfo });
-  if (userInfo.length < 1) {
-    return { error: "The email has not yet registered." };
+  try {
+    const { email, password } = signInInfo;
+    const userInfo = await selectUserByEmail(email);
+    console.log({ userInfo: userInfo });
+    if (userInfo.length < 1) {
+      return { error: "The email has not yet registered." };
+    }
+    const passwordFromDb = userInfo[0].password;
+    const isPasswordMatch = bcrypt.compareSync(password, passwordFromDb);
+    if (!isPasswordMatch) {
+      return { error: "Invalid information." };
+    }
+    const resUserData = formResUserInfo(userInfo[0]);
+    return updateAccessToken(resUserData);
+  } catch (error) {
+    console.log({ nativeSigninFlow: error });
+    throw error;
   }
-  const passwordFromDb = userInfo[0].password;
-  const isPasswordMatch = bcrypt.compareSync(password, passwordFromDb);
-  if (!isPasswordMatch) {
-    return { error: "Invalid information." };
-  }
-  const resUserData = formResUserInfo(userInfo[0]);
-  return updateAccessToken(resUserData);
 };
 
 const updateAccessToken = (userInfo) => {
@@ -231,35 +244,53 @@ const updateAccessToken = (userInfo) => {
   return userInfo;
 };
 
-const test = (req, res) => {
-  console.log("connected to react!");
-  res.send({ message: "connected to react!" });
-};
-
-const updateMembershipTypeFlow = async (req, res) => {
+const updateMemberTypeFlow = async (req, res) => {
   try {
     const dataValidation = validateMembershipType(req.body);
     if (dataValidation.error) {
       return res.status(400).send(dataValidation);
     }
-    const membershipType = req.body.membership_type;
+    const memberType = req.body.membership_type;
     const userId = req.user.id;
-    const updatedMembershipType = await updateMembershipType(
-      userId,
-      membershipType
-    );
-    console.log({ updatedMembershipType: updatedMembershipType });
-    return res.status(200).send(updatedMembershipType[0]);
+    const memberTypeDataToDb = formMemberTypeDataToUpdate(userId, memberType);
+    const updatedMemberType = await updateMemberType(memberTypeDataToDb);
+    if (updatedMemberType[0].member_type !== memberType) {
+      throw new Error("The inserted result of member_type is not correct.");
+    }
+    return res.status(200).send({
+      user_id: updatedMemberType[0].user_id,
+      message: "Membership type have been updated!",
+    });
   } catch (error) {
-    console.log(error.message);
-    return res
-      .status(400)
-      .send("Something went wrong from updating membership_type flow.");
+    console.log({ updateMemberTypeFlow: error });
+    throw error;
+  }
+};
+
+const formMemberTypeDataToUpdate = (id, memberType) => {
+  const now = new Date();
+  const memberTypeInfo = {
+    userId: id,
+    memberType: memberType,
+    shared_times: 0,
+    shared_limit_times: 10,
+    updated: now,
+  };
+  if (memberType === "annual_plan") {
+    const nextYear = new Date().getFullYear() + 1;
+    const expiredDatetime = new Date(new Date().setFullYear(nextYear));
+    memberTypeInfo.expiredDatetime = expiredDatetime;
+    return memberTypeInfo;
+  } else if (memberType === "monthly_plan") {
+    const nextMonth = new Date().getMonth() + 1;
+    const expiredDatetime = new Date(new Date().setMonth(nextMonth));
+    memberTypeInfo.expiredDatetime = expiredDatetime;
+    return memberTypeInfo;
   }
 };
 
 module.exports = {
   signUpFlow,
   signInFlow,
-  updateMembershipTypeFlow,
+  updateMemberTypeFlow,
 };
