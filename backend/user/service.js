@@ -145,18 +145,18 @@ const getFBUser = async (access_token) => {
 };
 
 const getGoogleUser = async (access_token) => {
-  const googleUser = await axios
-    .get("https://www.googleapis.com/oauth2/v2/userinfo", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-    .then((res) => res.data)
-    .catch((error) => {
-      console.error(`Failed to fetch user`);
-      throw new Error(error.message);
-    });
-  return googleUser;
+  const base64Url = access_token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map((c) => {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
 };
 
 const thirdPartySigninFlow = async (signInInfo) => {
