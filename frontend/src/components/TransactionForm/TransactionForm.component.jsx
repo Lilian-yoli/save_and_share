@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "./TransactionForm.styles.scss";
-import Button from "../../components/Button/Button.component";
+import Button from "../Button/Button.component";
 
 const fields = {
   number: {

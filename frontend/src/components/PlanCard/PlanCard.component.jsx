@@ -1,5 +1,5 @@
 import { PlanCardWrapper } from "./PlanCard.styles";
-import Button from "../../components/Button/Button.component";
+import Button from "../Button/Button.component";
 import { useRef } from "react";
 import {POST} from '../../utils/API';
 
