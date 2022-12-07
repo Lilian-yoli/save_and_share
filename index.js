@@ -4,11 +4,22 @@ const app = express();
 const { PORT, API_VERSION, FRONTEND_HOST } = process.env;
 const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger_user.json");
+const swaggerUserFile = require("./swagger/swagger_user.json");
+const swaggerShareFile = require("./swagger/swagger_share.json");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extend: true }));
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(
+  "/doc-user",
+  swaggerUi.serveFiles(swaggerUserFile),
+  swaggerUi.setup(swaggerUserFile)
+);
+app.use(
+  "/doc-share",
+  swaggerUi.serveFiles(swaggerShareFile),
+  swaggerUi.setup(swaggerShareFile)
+);
+// app.use("/doc-user", swaggerUi.serve, swaggerUi.setup(swaggerUserFile));
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", FRONTEND_HOST);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

@@ -1,0 +1,247 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Save & Share Share Api Docs",
+    "termsOfService": "http://swagger.io/terms/",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://54.248.36.249/api/1.0"
+    }
+  ],
+  "paths": {
+    "/share/share-launch": {
+      "post": {
+        "tags": [
+          "launch-share"
+        ],
+        "summary": "Launch a share campaign",
+        "description": "Launch a share campaign with share info",
+        "operationId": "launch-share",
+        "requestBody": {
+          "description": "Detail info of share campaign",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/share-launch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response-share-launch"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Duplicated Email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "share-launch": {
+        "required": [
+          "name",
+          "category",
+          "expiry_date",
+          "county",
+          "district",
+          "meet_up_datetime",
+          "unit_description",
+          "total_portions",
+          "own_portions",
+          "price"
+        ],
+        "type": "object",
+        "properties": {        
+          "name": {
+            "type": "string",
+            "example": "Dozen of Haggan Daz"
+          },
+          "category": {
+            "type": "string",
+            "example": "food"
+          },
+          "food_description": {
+            "type": "string",
+            "example": "12 cups of Haggan Daz"
+          },
+          "image": {
+            "type": "string",
+            "example": "http://images/image.png"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "county": {
+            "type": "string",
+            "example": "Tainan"
+          },
+          "district": {
+            "type": "string",
+            "example": "East district"
+          },
+          "address": {
+            "type": "string",
+            "example": "No.1, Cheng Kung road"
+          },
+          "meet_up_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "unit_description": {
+            "type": "string",
+            "example": "a cup, 450ml"
+          }, 
+          "total_portions": {
+            "type": "integer",
+            "format": "int64",
+            "example": 12
+          },
+          "own_portions": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 100
+          }     
+        }
+      },
+      "response-share-launch": {
+        "required": [
+          "name",
+          "category",
+          "expiry_date",
+          "county",
+          "district",
+          "meet_up_datetime",
+          "unit_description",
+          "total_portions",
+          "own_portions",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Dozen of Haggan Daz"
+          },
+          "category": {
+            "type": "string",
+            "example": "food"
+          },
+          "food_description": {
+            "type": "string",
+            "example": "12 cups of Haggan Daz"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "county": {
+            "type": "string",
+            "example": "Tainan"
+          },
+          "district": {
+            "type": "string",
+            "example": "East district"
+          },
+          "address": {
+            "type": "string",
+            "example": "No.1, Cheng Kung road"
+          },
+          "meet_up_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "unit_description": {
+            "type": "string",
+            "example": "a cup, 450ml"
+          }, 
+          "total_portions": {
+            "type": "integer",
+            "format": "int64",
+            "example": 12
+          },
+          "own_portions": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 100
+          }     
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}  
