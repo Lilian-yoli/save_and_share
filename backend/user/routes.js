@@ -1,6 +1,14 @@
 const router = require("express").Router();
 const { wrapAsync, authentication } = require("../utils");
-const { signUpFlow, signInFlow, updateMemberTypeFlow } = require("./service");
+const {
+  signUpFlow,
+  signInFlow,
+  updateMemberTypeFlow,
+  testCors,
+} = require("./service");
+
+// TESTING: should remove after testing
+router.route("/user/test-cors").post(testCors);
 
 router.route("/user/signup").post(wrapAsync(signUpFlow));
 

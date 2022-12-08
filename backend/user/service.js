@@ -15,6 +15,11 @@ const { TOKEN_EXPIRED, TOKEN_SECRET } = process.env;
 const axios = require("axios");
 addFormats(ajv);
 
+// TESTING: should remove after testing
+const testCors = (req, res) => {
+  return res.status(200).send("See me when no CORS occurs.");
+};
+
 const signUpFlow = async (req, res) => {
   try {
     const signUpBody = req.body;
@@ -290,6 +295,7 @@ const formMemberTypeDataToUpdate = (id, memberType) => {
 };
 
 module.exports = {
+  testCors,
   signUpFlow,
   signInFlow,
   updateMemberTypeFlow,
