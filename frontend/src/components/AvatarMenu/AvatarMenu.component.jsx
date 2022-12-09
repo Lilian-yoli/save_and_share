@@ -35,6 +35,7 @@ export default function FadeMenu() {
   const logOut = () => {
     setCurrentUser({ id: "", isLoggedIn: false });
     Cookies.remove("Share&SaveToken");
+    navigate('/')
   };
 
   return (
