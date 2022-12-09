@@ -1,7 +1,8 @@
 import { PlanCardWrapper } from "./PlanCard.styles";
 import Button from "../Button/Button.component";
 import { useRef } from "react";
-import {POST} from '../../utils/API';
+import { POST } from '../../utils/API';
+
 
 const PlanCard = ({ plan, action }) => {
   const { title, fee, duration, features } = plan;
@@ -13,18 +14,15 @@ const PlanCard = ({ plan, action }) => {
 
     switch (selectedPlan) {
       case "嘗試方案": {
-        // TODO: 1. post request to DB 2. popup to notify user and redirect to landing page
         action();
         break;
       }
       case "月方案": {
-        // TODO: 1. post request to DB  2. to transaction page
-        await POST('/update-membership-type', {'membership_type': 'monthly-plan'})
+        await POST('/user/update-membership-type', { 'membership_type': 'monthly-plan' })
         break;
       }
       case "年方案": {
-        // TODO: 1. post request to DB  2. to transaction page
-        await POST('/update-membership-type', {'membership_type': 'yearly-plan'})
+        await POST('/user/update-membership-type', { 'membership_type': 'yearly-plan' })
         break;
       }
       default: {
