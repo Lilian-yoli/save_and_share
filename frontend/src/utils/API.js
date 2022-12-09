@@ -18,11 +18,6 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-API.interceptors.response.use((response) => {
-  return {
-    data: response.data.data,
-  };
-});
 
 async function GET(path, params) {
   const response = await API.get(path, params);

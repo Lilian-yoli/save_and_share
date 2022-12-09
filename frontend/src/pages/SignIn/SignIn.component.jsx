@@ -4,7 +4,9 @@ import SignInForm from "../../components/SignInForm/SignInForm.component";
 import FacebookLogin from "react-facebook-login";
 import "./facebook.styles.scss";
 import { POST } from "../../utils/API";
-import { userContext } from "../../contexts/userContext";
+import { userContext, UserProvider } from "../../contexts/userContext";
+import Cookies from "js-cookie";
+import dayjs from "dayjs";
 
 const SignInPage = () => {
   const { setCurrentUser } = useContext(userContext);
@@ -13,9 +15,14 @@ const SignInPage = () => {
   const handleCredentialResponse = async (response) => {
     try {
       const access_token = response.credential;
+
       const form = { provider: "google", access_token };
-      const { data } = await POST("user/signin", form);
-      console.log(data);
+      const { data } = await POST("/user/signin", form);
+      const { access_token: accessToken, token_expired, user } = data;
+
+      const daysToExpire = dayjs.duration(token_expired, "seconds").asDays();
+      Cookies.set("Share&SaveToken", accessToken, { expires: daysToExpire });
+      setCurrentUser({ id: user.id, isLoggedIn: true })
     } catch (error) {
       console.error(error)
     }
