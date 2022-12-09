@@ -9,13 +9,16 @@ import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import convertErrorMessages from "../../utils/errorMessages";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { userContext } from "../../contexts/userContext";
+
 
 dayjs.extend(duration);
 
 const SignUpForm = ({ onSubmitHandler }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const { setCurrentUser } = useContext(userContext)
 
   const validationSchema = object({
     email: string().email("不符 Email 格式").required("請填寫信箱"),
@@ -36,11 +39,11 @@ const SignUpForm = ({ onSubmitHandler }) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const {
-          data: { access_token, token_expired, user },
-        } = await POST("user/signup", values);
+        const { data } = await POST("/user/signup", values);
+        const { data: { access_token, token_expired, user } } = data
         const daysToExpire = dayjs.duration(token_expired, "seconds").asDays();
         Cookies.set("Share&SaveToken", access_token, { expires: daysToExpire });
+        setCurrentUser({ id: user.id, isLoggedIn: true })
         onSubmitHandler();
       } catch (error) {
         const errorMsg = convertErrorMessages(error);
