@@ -2,14 +2,13 @@ import styled from "styled-components";
 
 export const FormfieldWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: top;
   gap: 20px;
-  position: absolute;
+  position: ${props => props.variant ? 'absolute' : 'static'};
   left: 0;
   right: 0;
   bottom: 6px;
-  width: 80%;
   height: 80px;
   margin: auto;
 
@@ -21,15 +20,15 @@ export const FormfieldWrapper = styled.div`
     label,
     input,
     div {
-      color: #fff;
+      color: ${props => props.variant ? '#fff' : '#777'};
     }
 
     fieldset {
-      border-color: #fff;
+      border-color: ${props => props.variant ? '#fff' : '#777'};
     }
 
     fieldset:focus {
-      border-color: #fff !important;
+      border-color: ${props => props.variant ? '#fff' : '#777'} !important;
     }
   }
 
