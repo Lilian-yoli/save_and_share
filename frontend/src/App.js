@@ -7,7 +7,9 @@ import SharePage from "./pages/Share/Share.component";
 import SignUpPage from "./pages/SignUp/SignUp.component";
 import SignInPage from "./pages/SignIn/SignIn.component";
 import TransactionPage from "./pages/Transaction/Transaction.component";
-import MySharePage from './pages/MyShare/MyShare.component'
+import MySharePage from './pages/MyShare/MyShare.component';
+import MyPurchasePage from "./pages/MyPurchase/MyPurchase.component";
+import SearchDetail from "./pages/SearchDetail/SearchDetail.component";
 
 function App() {
   return (
@@ -16,8 +18,10 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/search/details-:id" element={<SearchDetail />} />
         <Route path="/share" element={<SharePage />} />
         <Route path="/my-share" element={<MySharePage />} />
+        <Route path="/my-purchase" element={<MyPurchasePage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/transaction" element={<TransactionPage />} />
