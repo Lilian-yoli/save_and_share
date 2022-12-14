@@ -1,0 +1,20 @@
+.payment-review {
+  border: 1px solid #888;
+  padding: 15px;
+  max-width: 300px;
+  min-width: 250px;
+  box-shadow: 4px 4px 1px rgba(0, 0, 0, 0.2);
+
+  &-subject {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  &-content {
+    margin-top: 15px;
+
+    p + p {
+      margin-top: 8px;
+    }
+  }
+}
