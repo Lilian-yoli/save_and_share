@@ -29,7 +29,10 @@ app.use(function (req, res, next) {
 });
 
 // api route
-app.use("/api/" + API_VERSION, [require("./backend/user/routes")]);
+app.use("/api/" + API_VERSION, [
+  require("./backend/user/routes"),
+  require("./backend/routes/share_route"),
+]);
 
 app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
