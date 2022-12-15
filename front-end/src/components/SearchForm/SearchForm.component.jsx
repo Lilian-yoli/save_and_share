@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const foodCategories = ["生鮮魚肉", "蔬菜", "水果", "零食", "飲品", "其他"];
 
-const SearchForm = () => {
+const SearchForm = ({ variant }) => {
   const [districtList, setDistrictList] = useState([]);
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const SearchForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormfieldWrapper>
+      <FormfieldWrapper variant={variant}>
         <TextField
           select
           id="category"

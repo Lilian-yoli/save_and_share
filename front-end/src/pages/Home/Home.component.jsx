@@ -29,7 +29,7 @@ const Home = () => {
         <ImgContainer>
           <img src={landingPageImg} alt="a variety of foods" />
         </ImgContainer>
-        <SearchForm />
+        <SearchForm variant={true} />
       </HeroContainer>
       <section>
         <CardsContainer>
