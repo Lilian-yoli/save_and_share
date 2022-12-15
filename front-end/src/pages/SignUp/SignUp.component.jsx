@@ -67,7 +67,7 @@ const SignUpPage = () => {
     <ContentWrapper vertical width="450px">
       <h2>還沒有註冊嗎？</h2>
       <SignUpForm onSubmitHandler={onSubmitHandler} />
-      <LinkToSignInPage>已經有帳號了？</LinkToSignInPage>
+      <LinkToSignInPage to="/sign-in">已經有帳號了？</LinkToSignInPage>
     </ContentWrapper>
   );
 };
