@@ -65,10 +65,10 @@ export default function FadeMenu() {
             <MenuItem onClick={handleClose} className="customized menu-item">
               你的訊息
             </MenuItem>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem onClick={() => getToPage("my-share")} className="customized menu-item">
               發起的分購
             </MenuItem>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem onClick={() => getToPage("my-purchase")} className="customized menu-item">
               加入的分購
             </MenuItem>
             <MenuItem onClick={logOut} className="customized menu-item">
