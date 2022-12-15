@@ -35,7 +35,7 @@ const SignInForm = () => {
       try {
         const {
           data: { access_token, token_expired, user },
-        } = await POST("user/signin", values);
+        } = await POST("user/signin", { ...values, provider: 'native' });
         const daysToExpire = dayjs.duration(token_expired, "seconds").asDays();
         Cookies.set("Share&SaveToken", access_token, { expires: daysToExpire });
         setCurrentUser({ id: user.id, isLoggedIn: true });
