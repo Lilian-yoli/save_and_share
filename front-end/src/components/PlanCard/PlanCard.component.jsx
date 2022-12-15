@@ -2,12 +2,15 @@ import { PlanCardWrapper } from "./PlanCard.styles";
 import Button from "../Button/Button.component";
 import { useRef } from "react";
 import { POST } from '../../utils/API';
+import { useNavigate } from "react-router-dom";
 
 
 const PlanCard = ({ plan, action }) => {
   const { title, fee, duration, features } = plan;
 
   let titleRef = useRef();
+
+  const navigate = useNavigate();
 
   const onClickHandler = async () => {
     const selectedPlan = titleRef.current.innerText;
@@ -18,11 +21,13 @@ const PlanCard = ({ plan, action }) => {
         break;
       }
       case "月方案": {
-        await POST('/user/update-membership-type', { 'membership_type': 'monthly-plan' })
+        await POST('/user/update-membership-type', { 'membership_type': 'monthly_plan' })
+        navigate('/transaction?plan=monthly_plan')
         break;
       }
       case "年方案": {
-        await POST('/user/update-membership-type', { 'membership_type': 'yearly-plan' })
+        await POST('/user/update-membership-type', { 'membership_type': 'annual_plan' })
+        navigate('/transaction?plan=annual_plan')
         break;
       }
       default: {

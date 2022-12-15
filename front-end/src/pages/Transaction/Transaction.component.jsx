@@ -4,10 +4,14 @@ import { useNavigate } from "react-router-dom";
 import TransactionForm from "../../components/TransactionForm/TransactionForm.component";
 import PaymentReview from "../../components/PaymentReview/PaymentReview.component";
 import { TransactionWrapper } from "./Transaction.styles";
+import { useQuery } from "../../utils/useQuery";
 
 const TransactionPage = () => {
   const [dialogType, setDialogType] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const query = useQuery();
+  const planType = query.get("plan");
 
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = (cb) => {
@@ -63,7 +67,7 @@ const TransactionPage = () => {
   return (
     <TransactionWrapper>
       <TransactionForm onSubmitHandler={onSubmitHandler} />
-      <PaymentReview />
+      <PaymentReview type={planType} />
       <Dialog
         content={DIALOG_TYPES[dialogType]?.content}
         buttonText={DIALOG_TYPES[dialogType]?.buttonText}
