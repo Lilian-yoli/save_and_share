@@ -41,7 +41,7 @@ const insertShareLaunchDataToDb = async (shareLaunchDataArray) => {
 const updateMemberTypeInfo = async (userId) => {
   try {
     const updateMemberTypeQuery =
-      "UPDATE member_types SET shared_times = shared_times + 1 WHERE user_id = $1 RETURNING shared_times;";
+      "UPDATE member_types SET shared_times = shared_times + 1, updated = NOW() WHERE user_id = $1 RETURNING shared_times;";
     const updatedResult = await pgsqlPool
       .query(updateMemberTypeQuery, [userId])
       .then((result) => {
@@ -56,8 +56,29 @@ const updateMemberTypeInfo = async (userId) => {
   }
 };
 
+const updateDailyShareTimesTo0 = async () => {
+  try {
+    const updateDailyShareTimesTo0Query =
+      "UPDATE member_types SET shared_times = 0, updated = NOW();";
+    const updatedResult = await pgsqlPool
+      .query(updateDailyShareTimesTo0Query)
+      .then((result) => {
+        return result.rowCount;
+      })
+      .catch((e) => console.error(e.stack));
+    console.log(updatedResult);
+    return updatedResult;
+  } catch (error) {
+    console.log({ updateDailyShareTimesTo0: error });
+    throw error;
+  }
+};
+
+// updateDailyShareTimesTo0();
+
 module.exports = {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
   updateMemberTypeInfo,
+  updateDailyShareTimesTo0,
 };

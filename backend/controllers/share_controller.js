@@ -51,7 +51,6 @@ const checkMemberType = ({ member_type }) => {
   }
   return { error: "Standard membership type can not launch a share" };
 };
-// console.log(checkMemberType({ member_type: "annual_plan" }));
 
 const checkMemberTypeExpired = ({ expired_datetime }) => {
   const now = new Date();
@@ -62,15 +61,6 @@ const checkMemberTypeExpired = ({ expired_datetime }) => {
   }
   return { error: "Membership type expired." };
 };
-// console.log(
-//   checkMemberTypeExpired({
-//     member_type: "standard",
-//     shared_times: 0,
-//     shared_limit_times: 0,
-//     expiry_datetime: "1670442633.486000",
-//     updated: "2022-12-07T11:50:33.486Z",
-//   })
-// );
 
 const checkOverSharableTimes = ({ shared_times, shared_limit_times }) => {
   if (shared_limit_times > shared_times) {
@@ -78,7 +68,6 @@ const checkOverSharableTimes = ({ shared_times, shared_limit_times }) => {
   }
   return { error: "Daily share already reach limitation." };
 };
-// console.log(checkOverSharableTimes({ shared_times: 3, shared_limit_times: 2 }));
 
 // The later checker fn result will overlap the former one,
 // thus, higher priority check should place later
@@ -97,35 +86,6 @@ const checkUserSharable = (memberInfo, sharableCheckerFn) => {
     return result;
   }, {});
 };
-console.log(
-  checkUserSharable(
-    {
-      member_type: "annual_plan",
-      shared_times: 0,
-      shared_limit_times: 2,
-      expiry_datetime: "1870442633.486000",
-      updated: "2022-12-07T11:50:33.486Z",
-    },
-    sharableCheckerFn
-  )
-);
-
-const validTest = {
-  name: "Dozen of Haggan Daz",
-  category: "水果",
-  food_description: "12 cups of Haggan Daz",
-  image: "http://images/image.png",
-  expiry_date: "2022-12-06T07:50:16.830Z",
-  county: "台南市",
-  district: "East district",
-  address: "No.1, Cheng Kung road",
-  meet_up_datetime: "2022-12-06T07:50:16.830Z",
-  unit_description: "a cup, 450ml",
-  total_portions: 12,
-  own_portions: 3,
-  price: 100,
-};
-// console.log(validateShareLaunchData(validTest));
 
 const formShareLaunchData = (userId, shareLaunchDataPack) => {
   const now = new Date();
@@ -164,9 +124,6 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
   ];
   return dataToDb;
 };
-// console.log(formShareLaunchData(2, validTest));
-// insertShareLaunchDataToDb(formShareLaunchData(2, validTest));
-// updateMemberTypeInfo(2);
 
 module.exports = {
   shareLaunchFlow,
