@@ -20,14 +20,6 @@ app.use(
   swaggerUi.serveFiles(swaggerShareFile),
   swaggerUi.setup(swaggerShareFile)
 );
-// app.use("/doc-user", swaggerUi.serve, swaggerUi.setup(swaggerUserFile));
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", FRONTEND_HOST);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-});
 
 // api route
 app.use("/api/" + API_VERSION, [
