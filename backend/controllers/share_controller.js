@@ -1,19 +1,27 @@
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 const ajv = new Ajv({ allErrors: true }); // options can be passed, e.g. {allErrors: true}
-const { shareLaunchSchema } = require("../schemas/share_schema");
+const {
+  shareLaunchSchema,
+  shareSearchSchema,
+} = require("../schemas/share_schema");
 const {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
   updateMemberTypeInfo,
+  selectSharesBySearchInfo,
 } = require("../models/share_model");
 addFormats(ajv, { mode: "fast", formats: ["date-time"], keywords: true });
+const { validateInputData } = require("../utils");
 
 const shareLaunchFlow = async (req, res) => {
   console.log({ shareLaunchFlow: "shareLaunchFlow" });
   const shareLaunchDataPack = req.body;
   const userId = req.user.id;
-  const validatedResult = validateShareLaunchData(shareLaunchDataPack);
+  const validatedResult = validateInputData(
+    shareLaunchSchema,
+    shareLaunchDataPack
+  );
   if (validatedResult.error) {
     return res.status(400).send(validatedResult);
   }
@@ -32,17 +40,6 @@ const shareLaunchFlow = async (req, res) => {
   console.log({ sharedTimes: sharedTimes });
   insertedShareData[0].sharedTimes = sharedTimes[0].shared_times;
   return res.status(200).send({ data: insertedShareData[0] });
-};
-
-const validateShareLaunchData = (shareLaunchDataPack) => {
-  const validate = ajv.compile(shareLaunchSchema);
-  const valid = validate(shareLaunchDataPack);
-  //   DEBUG
-  //   console.log(validate.errors);
-  if (!valid) {
-    return { error: "Format error with share launch input data." };
-  }
-  return { error: null };
 };
 
 const checkMemberType = ({ member_type }) => {
@@ -125,6 +122,23 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
   return dataToDb;
 };
 
+const shareSearchFlow = async (req, res) => {
+  console.log({ shareLaunchFlow: "shareSearch Flow" });
+  const shareSearchDataPack = req.body;
+  const validatedResult = validateInputData(
+    shareSearchSchema,
+    shareSearchDataPack
+  );
+  if (validatedResult.error) {
+    return res.status(400).send(validatedResult);
+  }
+  const searchResult = await selectSharesBySearchInfo(shareSearchDataPack);
+  return res.status(200).send({ data: searchResult });
+};
+
+// console.log(validateInputData(shareSearchSchema, inputData));
+
 module.exports = {
   shareLaunchFlow,
+  shareSearchFlow,
 };

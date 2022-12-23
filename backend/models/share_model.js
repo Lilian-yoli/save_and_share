@@ -1,4 +1,5 @@
 const { pgsqlPool } = require("./../pgsql_connection");
+const log = require("npmlog");
 
 // TODO: should use transaction to atomic this operation
 const selectMemberInfoById = async (userId) => {
@@ -33,7 +34,7 @@ const insertShareLaunchDataToDb = async (shareLaunchDataArray) => {
     console.log(insertedResult);
     return insertedResult;
   } catch (error) {
-    console.log({ insertShareLaunchDataToDb: error });
+    log.error({ insertShareLaunchDataToDb: error });
     throw error;
   }
 };
@@ -76,9 +77,34 @@ const updateDailyShareTimesTo0 = async () => {
 
 // updateDailyShareTimesTo0();
 
+const selectSharesBySearchInfo = async ({
+  name,
+  category,
+  county,
+  district,
+}) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function selectSharesBySearch");
+    const selectSharesBySearchInfoQuery =
+      "SELECT id, name, description, expiry_date, meet_up_datetime FROM shared_foods WHERE name LIKE '%' || $1 || '%' AND category = $2 AND county = $3 AND district = $4 AND expiry_date > NOW()";
+    const selectedResult = await pgsqlPool
+      .query(selectSharesBySearchInfoQuery, [name, category, county, district])
+      .then((result) => {
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    console.log({ selectedResult: selectedResult });
+    return selectedResult;
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
 module.exports = {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
   updateMemberTypeInfo,
   updateDailyShareTimesTo0,
+  selectSharesBySearchInfo,
 };

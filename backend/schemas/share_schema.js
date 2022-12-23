@@ -31,6 +31,19 @@ const shareLaunchSchema = {
   additionalProperties: false,
 };
 
+const shareSearchSchema = {
+  type: "object",
+  properties: {
+    name: { type: "string", minLength: 1 },
+    category: { enum: ["生鮮魚肉", "蔬菜", "水果", "零食", "飲品", "其他"] },
+    county: { enum: ["台北市", "台南市", "台中市"] },
+    district: { type: "string", minLength: 1 },
+  },
+  required: ["name", "category", "county", "district"],
+  additionalProperties: false,
+};
+
 module.exports = {
   shareLaunchSchema,
+  shareSearchSchema,
 };

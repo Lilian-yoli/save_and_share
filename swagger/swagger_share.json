@@ -159,7 +159,7 @@
           },
           "category": {
             "type": "string",
-            "example": "food"
+            "example": "零食"
           },
           "food_description": {
             "type": "string",
@@ -176,7 +176,7 @@
           },
           "county": {
             "type": "string",
-            "example": "Tainan"
+            "example": "台南市"
           },
           "district": {
             "type": "string",
@@ -238,7 +238,7 @@
           },
           "category": {
             "type": "string",
-            "example": "food"
+            "example": "零食"
           },
           "food_description": {
             "type": "string",
@@ -251,7 +251,7 @@
           },
           "county": {
             "type": "string",
-            "example": "Tainan"
+            "example": "台南市"
           },
           "district": {
             "type": "string",
@@ -302,11 +302,11 @@
           },
           "category": {
             "type": "string",
-            "example": "food"
+            "example": "零食"
           },
           "county": {
             "type": "string",
-            "example": "Tainan"
+            "example": "台南市"
           },
           "district": {
             "type": "string",
@@ -315,11 +315,18 @@
         }
       },
       "response-share-search": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/response-share-search-obj"
+        }
+      },
+      "response-share-search-obj": {
         "required": [
           "id",
           "name",
           "food_description",
-          "expiry_date"
+          "expiry_date",
+          "meet_up_datetime"
         ],
         "type": "object",
         "properties": {
@@ -329,7 +336,7 @@
           },
           "food_description": {
             "type": "string",
-            "example": "food"
+            "example": "零食"
           },
           "expiry_date": {
             "type": "string",
@@ -339,6 +346,11 @@
           "id": {
             "type": "integer",
             "example": 1
+          },
+          "meet_up_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
           }
         }
       },

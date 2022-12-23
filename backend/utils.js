@@ -1,6 +1,10 @@
+const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
+const ajv = new Ajv({ allErrors: true }); // options can be passed, e.g. {allErrors: true}
 const jwt = require("jsonwebtoken");
 const { TOKEN_SECRET } = process.env;
 const { selectUserByEmail } = require("./user/model");
+addFormats(ajv, { mode: "fast", formats: ["date-time"], keywords: true });
 
 const wrapAsync = (fn) => {
   return function (req, res, next) {
@@ -35,7 +39,19 @@ const authentication = () => {
   };
 };
 
+const validateInputData = (schema, inputData) => {
+  const validate = ajv.compile(schema);
+  const valid = validate(inputData);
+  //   DEBUG
+  //   console.log(validate.errors);
+  if (!valid) {
+    return { error: "Format error with input data." };
+  }
+  return { error: null };
+};
+
 module.exports = {
   wrapAsync,
   authentication,
+  validateInputData,
 };
