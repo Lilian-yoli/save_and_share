@@ -10,36 +10,53 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useShareStore } from "../../stores/shareStore";
+import { POST } from "../../utils/API";
 
-const StepThree = ({ onClickHandler }) => {
+const StepThree = ({ next, previous }) => {
   const [districtList, setDistrictList] = useState([]);
+
+  const meetUpInfo = useShareStore((state) => state.meetUpInfo);
+  const saveMeetUpInfo = useShareStore((state) => state.saveMeetUpInfo);
 
   const validationSchema = object({
     county: string().required("必填"),
     district: string().required("必填"),
     address: string().required("必填"),
-    meetUpDate: string().nullable("必填").required("必填"),
-    meetUpTime: string().nullable("必填").required("必填"),
+    meet_up_date: string().nullable("必填").required("必填"),
+    meet_up_time: string().nullable("必填").required("必填"),
   });
 
   const { handleChange, handleSubmit, setFieldValue, values, touched, errors } =
     useFormik({
       initialValues: {
-        county: "",
-        district: "",
-        address: "",
-        meetUpDate: Date.now(),
-        meetUpTime: Date.now(),
+        county: meetUpInfo.county,
+        district: meetUpInfo.district,
+        address: meetUpInfo.address,
+        meet_up_date: meetUpInfo.meet_up_date,
+        meet_up_time: meetUpInfo.meet_up_time,
       },
       validationSchema: validationSchema,
-      onSubmit: (values) => {
-        let { meetUpDate, meetUpTime } = values;
-        meetUpDate = dayjs(meetUpDate).format("YYYY-MM-DD");
-        meetUpTime = dayjs(meetUpTime).format("hh:mm");
+      onSubmit: async (values) => {
 
-        onClickHandler();
+        // ref. https://developers.google.com/maps/documentation/geocoding/requests-geocoding
+        // use geocoding api to convert address to longitude & latitude
+        const { data: { results } } = await POST(`https://maps.googleapis.com/maps/api/geocode/json?address=台灣${values.county}${values.district}${values.address}&key=${process.env.REACT_APP_GOOGLE_MAP}`);
+        const { lat, lng } = results[0].geometry.location;
+        values.latitude = lat;
+        values.longitude = lng;
+
+        let { meet_up_date, meet_up_time } = values;
+        meet_up_date = dayjs(meet_up_date).format('YYYY-MM-DD');
+        meet_up_time = dayjs(meet_up_time).format('HH:mm:ssZ[Z]');
+        const meet_up_datetime = `${meet_up_date}T${meet_up_time}`
+        values.meet_up_date = meet_up_date;
+        values.meet_up_time = meet_up_time
+        saveMeetUpInfo({ ...values, meet_up_datetime });
+        next();
       },
     });
+
 
   useEffect(() => {
     if (!values.county) return;
@@ -106,18 +123,18 @@ const StepThree = ({ onClickHandler }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             onChange={(value) => {
-              setFieldValue("meetUpDate", Date.parse(value));
+              setFieldValue("meet_up_date", Date.parse(value));
             }}
             inputFormat="YYYY/MM/DD"
-            value={values.meetUpDate}
+            value={values.meet_up_date}
             label="面交日期"
             renderInput={(params) => (
               <TextField
-                id="meetUpDate"
-                name="meetUpDate"
+                id="meet_up_date"
+                name="meet_up_date"
                 {...params}
-                error={touched.meetUpDate && Boolean(errors.meetUpDate)}
-                helperText={touched.meetUpDate && errors.meetUpDate}
+                error={touched.meet_up_date && Boolean(errors.meet_up_date)}
+                helperText={touched.meet_up_date && errors.meet_up_date}
                 sx={{ marginTop: "10px" }}
               />
             )}
@@ -126,17 +143,17 @@ const StepThree = ({ onClickHandler }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             label="面交時間"
-            value={values.meetUpTime}
+            value={values.meet_up_time}
             onChange={(value) => {
-              setFieldValue("meetUpTime", value);
+              setFieldValue("meet_up_time", value);
             }}
             inputProps={{ placeholder: "hh:mm" }}
             renderInput={(params) => (
               <TextField
-                id="meetUpTime"
-                name="meetUpTime"
-                error={touched.meetUpTime && Boolean(errors.meetUpTime)}
-                helperText={touched.meetUpTime && errors.meetUpTime}
+                id="meet_up_time"
+                name="meet_up_time"
+                error={touched.meet_up_time && Boolean(errors.meet_up_time)}
+                helperText={touched.meet_up_time && errors.meet_up_time}
                 sx={{ marginTop: "20px" }}
                 {...params}
               />
@@ -144,13 +161,21 @@ const StepThree = ({ onClickHandler }) => {
           />
         </LocalizationProvider>
       </FormfieldWrapper>
-      <Button
-        type="submit"
-        text="下一步"
-        variant="outlined"
-        color="secondary"
-        className="share-form-button"
-      />
+      <div className="share-form-button">
+        <Button
+          onClickHandler={previous}
+          type="button"
+          text="上一步"
+          variant="outlined"
+          color="secondary"
+        />
+        <Button
+          type="submit"
+          text="下一步"
+          variant="outlined"
+          color="secondary"
+        />
+      </div>
     </form>
   );
 };

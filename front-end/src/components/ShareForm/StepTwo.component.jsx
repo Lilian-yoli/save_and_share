@@ -1,26 +1,32 @@
 import { TextField } from "@mui/material";
-import { object, number } from "yup";
+import { object, number, string } from "yup";
 import { useFormik } from "formik";
 import Button from "../Button/Button.component";
 import { FormfieldWrapper } from "../SignUpForm/SignUpForm.styles";
+import { useShareStore } from "../../stores/shareStore";
 
-const StepTwo = ({ onClickHandler }) => {
+const StepTwo = ({ next, previous }) => {
+  const shareInfo = useShareStore((state) => state.shareInfo);
+  const saveShareInfo = useShareStore((state) => state.saveShareInfo)
+
   const validationSchema = object({
-    denominator: number().required("必填").positive("請輸入正整數"),
-    numerator: number().required("必填").positive("請輸入正整數"),
+    unit_description: string().required("必填"),
+    total_portions: number().required("必填").positive("請輸入正整數"),
+    own_portions: number().required("必填").positive("請輸入正整數"),
     price: number().required("必填").positive("請輸入正整數"),
   });
 
   const { handleChange, handleSubmit, values, errors, touched } = useFormik({
     initialValues: {
-      denominator: "",
-      numerator: "",
-      price: "",
+      unit_description: shareInfo.unit_description,
+      total_portions: shareInfo.total_portions,
+      own_portions: shareInfo.own_portions,
+      price: shareInfo.price,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-      onClickHandler();
+      saveShareInfo(values)
+      next();
     },
   });
 
@@ -28,24 +34,34 @@ const StepTwo = ({ onClickHandler }) => {
     <form onSubmit={handleSubmit} className="share-form">
       <FormfieldWrapper>
         <TextField
-          type="number"
-          id="denominator"
-          name="denominator"
-          label="預計平分成幾份呢？"
-          value={values.denominator}
+          id="unit_description"
+          name="unit_description"
+          label="單位"
+          value={values.unit_description}
           onChange={handleChange}
-          error={touched.denominator && Boolean(errors.denominator)}
-          helperText={touched.denominator && errors.denominator}
+          error={touched.unit_description && Boolean(errors.unit_description)}
+          helperText={touched.unit_description && errors.unit_description}
         />
         <TextField
           type="number"
-          id="numerator"
-          name="numerator"
-          label="自己想取用的份數"
-          value={values.numerator}
+          id="total_portions"
+          name="total_portions"
+          label="總份數"
+          value={values.total_portions}
           onChange={handleChange}
-          error={touched.numerator && Boolean(errors.numerator)}
-          helperText={touched.numerator && errors.numerator}
+          error={touched.total_portions && Boolean(errors.total_portions)}
+          helperText={touched.total_portions && errors.total_portions}
+          sx={{ marginTop: "20px" }}
+        />
+        <TextField
+          type="number"
+          id="own_portions"
+          name="own_portions"
+          label="自己想取用的份數"
+          value={values.own_portions}
+          onChange={handleChange}
+          error={touched.own_portions && Boolean(errors.own_portions)}
+          helperText={touched.own_portions && errors.own_portions}
           sx={{ marginTop: "20px" }}
         />
         <TextField
@@ -60,13 +76,21 @@ const StepTwo = ({ onClickHandler }) => {
           sx={{ marginTop: "20px" }}
         />
       </FormfieldWrapper>
-      <Button
-        type="submit"
-        text="下一步"
-        variant="outlined"
-        color="secondary"
-        className="share-form-button"
-      />
+      <div className="share-form-button">
+        <Button
+          onClickHandler={previous}
+          type="button"
+          text="上一步"
+          variant="outlined"
+          color="secondary"
+        />
+        <Button
+          type="submit"
+          text="下一步"
+          variant="outlined"
+          color="secondary"
+        />
+      </div>
     </form>
   );
 };
