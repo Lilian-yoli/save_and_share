@@ -14,6 +14,13 @@ const shareLaunchSchema = {
     total_portions: { type: "integer", minimum: 1 },
     own_portions: { type: "integer", minimum: 1 },
     price: { type: "integer", minimum: 1 },
+    location: {
+      type: "object",
+      properties: {
+        lat: { type: "number", minimum: -90.0, maximum: 90.0 },
+        lng: { type: "number", minimum: -180.0, maximum: 180.0 },
+      },
+    },
   },
   required: [
     "name",
@@ -27,6 +34,7 @@ const shareLaunchSchema = {
     "total_portions",
     "own_portions",
     "price",
+    "location",
   ],
   additionalProperties: false,
 };

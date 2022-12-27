@@ -100,6 +100,7 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     total_portions,
     own_portions,
     price,
+    location,
   } = shareLaunchDataPack;
   const dataToDb = [
     userId,
@@ -118,6 +119,8 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     now,
     now,
     unit_description,
+    location.lat,
+    location.lng,
   ];
   return dataToDb;
 };
