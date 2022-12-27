@@ -39,6 +39,11 @@ const shareLaunchFlow = async (req, res) => {
   const sharedTimes = await updateMemberTypeInfo(userId);
   console.log({ sharedTimes: sharedTimes });
   insertedShareData[0].sharedTimes = sharedTimes[0].shared_times;
+  insertedShareData[0].location = {};
+  insertedShareData[0].location.lat = insertedShareData[0].latitude;
+  insertedShareData[0].location.lng = insertedShareData[0].longitude;
+  delete insertedShareData[0]["latitude"];
+  delete insertedShareData[0]["longitude"];
   return res.status(200).send({ data: insertedShareData[0] });
 };
 
