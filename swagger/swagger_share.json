@@ -149,7 +149,8 @@
           "unit_description",
           "total_portions",
           "own_portions",
-          "price"
+          "price",
+          "location"
         ],
         "type": "object",
         "properties": {        
@@ -209,6 +210,19 @@
             "type": "integer",
             "format": "int64",
             "example": 100
+          },
+          "location": {
+            "type":"object",
+            "properties": {
+              "lat": {
+                "type": "float",
+                "example": 24.8451128
+              },
+              "lng": {
+                "type": "float",
+                "example": 121.2280722
+              }
+            }
           }     
         }
       },
@@ -284,7 +298,20 @@
             "type": "integer",
             "format": "int64",
             "example": 100
-          }     
+          },
+          "location": {
+            "type":"object",
+            "properties": {
+              "lat": {
+                "type": "float",
+                "example": 24.8451128
+              },
+              "lng": {
+                "type": "float",
+                "example": 121.2280722
+              }
+            }
+          }      
         }
       },
       "share-search": {
