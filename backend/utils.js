@@ -4,7 +4,12 @@ const ajv = new Ajv({ allErrors: true }); // options can be passed, e.g. {allErr
 const jwt = require("jsonwebtoken");
 const { TOKEN_SECRET } = process.env;
 const { selectUserByEmail } = require("./user/model");
-addFormats(ajv, { mode: "fast", formats: ["date-time"], keywords: true });
+addFormats(ajv, {
+  mode: "fast",
+  formats: ["date-time", "date"],
+  keywords: true,
+});
+const log = require("npmlog");
 
 const wrapAsync = (fn) => {
   return function (req, res, next) {
@@ -42,16 +47,30 @@ const authentication = () => {
 const validateInputData = (schema, inputData) => {
   const validate = ajv.compile(schema);
   const valid = validate(inputData);
-  //   DEBUG
-  //   console.log(validate.errors);
   if (!valid) {
+    //   DEBUG
+    log.error(
+      "UTILS-VALIDATION",
+      "Validation failed message: %j",
+      validate.errors
+    );
     return { error: "Format error with input data." };
   }
   return { error: null };
+};
+
+const timestampToDate = (timestamp) => {
+  const dashFormatDate = timestamp
+    .toISOString()
+    .replace(/T.*/, "")
+    .split("-")
+    .join("-");
+  return dashFormatDate;
 };
 
 module.exports = {
   wrapAsync,
   authentication,
   validateInputData,
+  timestampToDate,
 };
