@@ -51,7 +51,18 @@ const shareSearchSchema = {
   additionalProperties: false,
 };
 
+const shareJoinSchema = {
+  type: "object",
+  properties: {
+    share_id: { type: "integer", minimum: 0 },
+    taken_portions: { type: "integer", minimum: 1 },
+  },
+  required: ["share_id", "taken_portions"],
+  additionalProperties: false,
+};
+
 module.exports = {
   shareLaunchSchema,
   shareSearchSchema,
+  shareJoinSchema,
 };
