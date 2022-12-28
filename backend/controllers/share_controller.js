@@ -10,6 +10,7 @@ const {
   insertShareLaunchDataToDb,
   updateMemberTypeInfo,
   selectSharesBySearchInfo,
+  insertOwnPortionsToMatchedShare,
 } = require("../models/share_model");
 addFormats(ajv, {
   mode: "fast",
@@ -21,6 +22,7 @@ const { validateInputData, timestampToDate } = require("../utils");
 const shareLaunchFlow = async (req, res) => {
   console.log({ shareLaunchFlow: "shareLaunchFlow" });
   const shareLaunchDataPack = req.body;
+  const { own_portions } = req.body;
   const userId = req.user.id;
   const validatedResult = validateInputData(
     shareLaunchSchema,
@@ -38,6 +40,14 @@ const shareLaunchFlow = async (req, res) => {
   const shareLaunchDataArray = formShareLaunchData(userId, shareLaunchDataPack);
   const insertedShareData = await insertShareLaunchDataToDb(
     shareLaunchDataArray
+  );
+  const ownPortionsDataArray = formOwnPortionsData(
+    insertedShareData[0].id,
+    own_portions,
+    userId
+  );
+  const insertedOwnPortions = await insertOwnPortionsToMatchedShare(
+    ownPortionsDataArray
   );
   console.log({ insertedShareData: insertedShareData });
   const sharedTimes = await updateMemberTypeInfo(userId);
@@ -109,7 +119,6 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     meet_up_datetime,
     unit_description,
     total_portions,
-    own_portions,
     price,
     location,
   } = shareLaunchDataPack;
@@ -125,7 +134,6 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     address,
     meet_up_datetime,
     total_portions,
-    own_portions,
     price,
     now,
     now,
@@ -135,6 +143,11 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     "active",
   ];
   return dataToDb;
+};
+
+const formOwnPortionsData = (shareId, ownPortions, userId) => {
+  const now = new Date();
+  return [shareId, userId, "active", ownPortions, now, now];
 };
 
 const shareSearchFlow = async (req, res) => {

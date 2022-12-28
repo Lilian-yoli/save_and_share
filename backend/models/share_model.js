@@ -24,7 +24,7 @@ const selectMemberInfoById = async (userId) => {
 const insertShareLaunchDataToDb = async (shareLaunchDataArray) => {
   try {
     const insertShareLaunchDataQuery =
-      "INSERT INTO shared_foods(user_id, name, category, description, image, expiry_date, county, district, address, meet_up_datetime, total_portions, own_portions, price, created, updated, unit_description, latitude, longitude, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING *";
+      "INSERT INTO shared_foods(user_id, name, category, description, image, expiry_date, county, district, address, meet_up_datetime, total_portions, price, created, updated, unit_description, latitude, longitude, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *";
     const insertedResult = await pgsqlPool
       .query(insertShareLaunchDataQuery, shareLaunchDataArray)
       .then((result) => {
@@ -35,6 +35,27 @@ const insertShareLaunchDataToDb = async (shareLaunchDataArray) => {
     return insertedResult;
   } catch (error) {
     log.error({ insertShareLaunchDataToDb: error });
+    throw error;
+  }
+};
+
+const insertOwnPortionsToMatchedShare = async (ownPortionsDataArray) => {
+  try {
+    console.log({
+      insertOwnPortionsToMatchedShare: insertOwnPortionsToMatchedShare,
+    });
+    const insertOwnPortionsQuery =
+      "INSERT INTO matched_share(share_id, participant_id, status, taken_portions, created, updated) VALUES ($1, $2, $3, $4, $5, $6)";
+    const insertedResult = await pgsqlPool
+      .query(insertOwnPortionsQuery, ownPortionsDataArray)
+      .then((result) => {
+        return result.rows;
+      })
+      .catch((e) => console.error(e.stack));
+    console.log(insertedResult);
+    return insertedResult;
+  } catch (error) {
+    log.error({ insertOwnPortionsToMatchedShare: error });
     throw error;
   }
 };
@@ -104,6 +125,7 @@ const selectSharesBySearchInfo = async ({
 module.exports = {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
+  insertOwnPortionsToMatchedShare,
   updateMemberTypeInfo,
   updateDailyShareTimesTo0,
   selectSharesBySearchInfo,
