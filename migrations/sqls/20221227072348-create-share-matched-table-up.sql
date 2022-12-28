@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS public.matched_share
     share_id INT NOT NULL,
     participant_id INT NOT NULL,
     status VARCHAR(50) NOT NULL,
+    taken_portions INT NOT NULL,
     created TIMESTAMP without time zone NOT NULL,
     updated TIMESTAMP without time zone NOT NULL,
     FOREIGN KEY (share_id)
