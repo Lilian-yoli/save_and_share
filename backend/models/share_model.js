@@ -24,7 +24,7 @@ const selectMemberInfoById = async (userId) => {
 const insertShareLaunchDataToDb = async (shareLaunchDataArray) => {
   try {
     const insertShareLaunchDataQuery =
-      "INSERT INTO shared_foods(user_id, name, category, description, image, expiry_date, county, district, address, meet_up_datetime, total_portions, own_portions, price, created, updated, unit_description, latitude, longitude) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *";
+      "INSERT INTO shared_foods(user_id, name, category, description, image, expiry_date, county, district, address, meet_up_datetime, total_portions, own_portions, price, created, updated, unit_description, latitude, longitude, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING *";
     const insertedResult = await pgsqlPool
       .query(insertShareLaunchDataQuery, shareLaunchDataArray)
       .then((result) => {

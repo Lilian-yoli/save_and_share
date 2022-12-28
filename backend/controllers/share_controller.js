@@ -11,8 +11,12 @@ const {
   updateMemberTypeInfo,
   selectSharesBySearchInfo,
 } = require("../models/share_model");
-addFormats(ajv, { mode: "fast", formats: ["date-time"], keywords: true });
-const { validateInputData } = require("../utils");
+addFormats(ajv, {
+  mode: "fast",
+  formats: ["date-time"],
+  keywords: true,
+});
+const { validateInputData, timestampToDate } = require("../utils");
 
 const shareLaunchFlow = async (req, res) => {
   console.log({ shareLaunchFlow: "shareLaunchFlow" });
@@ -38,6 +42,8 @@ const shareLaunchFlow = async (req, res) => {
   console.log({ insertedShareData: insertedShareData });
   const sharedTimes = await updateMemberTypeInfo(userId);
   console.log({ sharedTimes: sharedTimes });
+  const expiryDate = insertedShareData[0].expiry_date;
+  insertedShareData[0].expiry_date = timestampToDate(expiryDate);
   insertedShareData[0].sharedTimes = sharedTimes[0].shared_times;
   insertedShareData[0].location = {};
   insertedShareData[0].location.lat = insertedShareData[0].latitude;
@@ -126,6 +132,7 @@ const formShareLaunchData = (userId, shareLaunchDataPack) => {
     unit_description,
     location.lat,
     location.lng,
+    "active",
   ];
   return dataToDb;
 };

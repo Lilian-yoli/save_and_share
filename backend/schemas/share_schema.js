@@ -3,10 +3,10 @@ const shareLaunchSchema = {
   properties: {
     name: { type: "string", minLength: 1 },
     category: { enum: ["生鮮魚肉", "蔬菜", "水果", "零食", "飲品", "其他"] },
-    food_description: { type: "string", minLength: 1 },
+    food_description: { type: "string" },
     image: { type: "string", minLength: 1 },
-    expiry_date: { type: "string", format: "date-time" },
-    county: { enum: ["台北市", "台南市", "台中市"] },
+    expiry_date: { type: "string", format: "date" },
+    county: { type: "string", minLength: 1 },
     district: { type: "string", minLength: 1 },
     address: { type: "string", minLength: 1 },
     meet_up_datetime: { type: "string", format: "date-time" },
