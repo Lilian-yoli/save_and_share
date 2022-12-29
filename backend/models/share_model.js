@@ -109,8 +109,8 @@ const selectSharesBySearchInfo = async ({
     const selectSharesBySearchInfoQuery = `WITH ms_info AS 
       (SELECT share_id, SUM(taken_portions) AS total_taken_portions 
        FROM matched_share GROUP BY share_id)
-       SELECT sf.id, sf.name, sf.description, sf.expiry_date, sf.meet_up_datetime, 
-       sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int
+       SELECT sf.id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
+       sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int
        FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
        WHERE sf.name LIKE '%' || $1 || '%' AND sf.category = $2 AND sf.county = $3 
        AND sf.district = $4 AND sf.meet_up_datetime > NOW();`;
@@ -127,13 +127,6 @@ const selectSharesBySearchInfo = async ({
     throw error;
   }
 };
-
-// selectSharesBySearchInfo({
-//   name: "Haggan Daz",
-//   category: "水果",
-//   county: "台南市",
-//   district: "East district",
-// });
 
 const selectShareById = async ({ share_id }) => {
   try {
