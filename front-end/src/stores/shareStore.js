@@ -1,6 +1,6 @@
 import create from "zustand";
 
-export const useShareStore = create((set) => ({
+const initialState = {
   foodInfo: {
     name: "",
     category: "",
@@ -18,13 +18,22 @@ export const useShareStore = create((set) => ({
     county: "",
     district: "",
     address: "",
-    latitude: "",
-    longitude: "",
+    location: {
+      lat: "",
+      lng: ""
+    },
     meet_up_date: null,
     meet_up_time: null,
     meet_up_datetime: null,
-  },
+  }
+}
+
+const state = JSON.parse(JSON.stringify(initialState));
+
+export const useShareStore = create((set) => ({
+  ...state,
   saveFoodInfo: (newFoodInfo) => set({ foodInfo: newFoodInfo }),
   saveShareInfo: (newShareInfo) => set({ shareInfo: newShareInfo }),
   saveMeetUpInfo: (newMeetUpInfo) => set({ meetUpInfo: newMeetUpInfo }),
+  resetShareForm: () => set({ ...initialState })
 }))

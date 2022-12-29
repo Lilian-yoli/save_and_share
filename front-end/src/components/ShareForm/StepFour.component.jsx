@@ -8,19 +8,23 @@ const StepFour = ({ previous }) => {
   const foodInfo = useShareStore((state) => state.foodInfo)
   const shareInfo = useShareStore((state) => state.shareInfo)
   const meetUpInfo = useShareStore((state) => state.meetUpInfo)
+  const resetForm = useShareStore((state) => state.resetShareForm)
 
   const navigate = useNavigate();
 
   const initiateShare = async () => {
-    console.log('confirm', foodInfo, shareInfo, meetUpInfo);
     delete meetUpInfo.meet_up_date;
     delete meetUpInfo.meet_up_time;
-
     const form = { ...foodInfo, ...shareInfo, ...meetUpInfo }
-    console.log('confirm', form);
-    await POST('/share/share-launch', form)
 
-    goToMyShare();
+    try {
+      await POST('/share/share-launch', form)
+      resetForm();
+      goToMyShare();
+    } catch (error) {
+      resetForm();
+      console.log(error);
+    }
   }
 
   const goToMyShare = () => {
@@ -31,7 +35,7 @@ const StepFour = ({ previous }) => {
     <section className="confirmation">
       <ConfirmationCard foodInfo={foodInfo} shareInfo={shareInfo} meetUpInfo={meetUpInfo} />
 
-      <div className="share-form-button">
+      <div className="share-form-buttons">
         <Button
           onClickHandler={previous}
           type="button"
