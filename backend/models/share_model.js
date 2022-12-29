@@ -106,8 +106,14 @@ const selectSharesBySearchInfo = async ({
 }) => {
   try {
     log.info("SHARE-MODEL", "Begin of the function selectSharesBySearch");
-    const selectSharesBySearchInfoQuery =
-      "SELECT id, name, description, expiry_date, meet_up_datetime FROM shared_foods WHERE name LIKE '%' || $1 || '%' AND category = $2 AND county = $3 AND district = $4 AND expiry_date > NOW()";
+    const selectSharesBySearchInfoQuery = `WITH ms_info AS 
+      (SELECT share_id, SUM(taken_portions) AS total_taken_portions 
+       FROM matched_share GROUP BY share_id)
+       SELECT sf.id, sf.name, sf.description, sf.expiry_date, sf.meet_up_datetime, 
+       sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int
+       FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
+       WHERE sf.name LIKE '%' || $1 || '%' AND sf.category = $2 AND sf.county = $3 
+       AND sf.district = $4 AND sf.meet_up_datetime > NOW();`;
     const selectedResult = await pgsqlPool
       .query(selectSharesBySearchInfoQuery, [name, category, county, district])
       .then((result) => {
@@ -121,6 +127,13 @@ const selectSharesBySearchInfo = async ({
     throw error;
   }
 };
+
+// selectSharesBySearchInfo({
+//   name: "Haggan Daz",
+//   category: "水果",
+//   county: "台南市",
+//   district: "East district",
+// });
 
 const selectShareById = async ({ share_id }) => {
   try {
