@@ -17,6 +17,6 @@ router
   .route("/share/share-join")
   .post(authentication(), wrapAsync(shareJoinFlow));
 
-router.route("/share/share-detail").post(wrapAsync(shareDetailFlow));
+router.route("/share/share-detail").get(wrapAsync(shareDetailFlow));
 
 module.exports = router;

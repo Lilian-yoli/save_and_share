@@ -228,7 +228,7 @@
       }
     },
     "/share/share-detail": {
-      "post": {
+      "get": {
         "tags": [
           "share-detail"
         ],
