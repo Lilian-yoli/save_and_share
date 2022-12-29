@@ -436,16 +436,20 @@
       "response-share-search": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/response-share-search-obj"
+          "$ref": "#/components/schemas/response-share-profile"
         }
       },
-      "response-share-search-obj": {
+      "response-share-profile": {
         "required": [
           "id",
           "name",
           "food_description",
           "expiry_date",
-          "meet_up_datetime"
+          "meet_up_datetime",
+          "price",
+          "unit_description",
+          "total_portions",
+          "taken_portions"
         ],
         "type": "object",
         "properties": {
@@ -459,8 +463,8 @@
           },
           "expiry_date": {
             "type": "string",
-            "format": "date-time",
-            "example": "2022-12-06T07:50:16.830Z"
+            "format": "date",
+            "example": "2022-12-06"
           },
           "id": {
             "type": "integer",
@@ -470,6 +474,25 @@
             "type": "string",
             "format": "date-time",
             "example": "2022-12-06T07:50:16.830Z"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32",
+            "example": 100
+          },
+          "unit_description": {
+            "type": "string",
+            "example": "個"
+          },
+          "total_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "12"
+          },
+          "taken_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "1"
           }
         }
       },
