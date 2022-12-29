@@ -14,6 +14,7 @@ const {
   insertOwnPortionsToMatchedShare,
   selectShareById,
   insertShareJoinToDb,
+  getShareDetailInfo,
 } = require("../models/share_model");
 addFormats(ajv, {
   mode: "fast",
@@ -58,12 +59,8 @@ const shareLaunchFlow = async (req, res) => {
   const expiryDate = insertedShareData[0].expiry_date;
   insertedShareData[0].expiry_date = timestampToDate(expiryDate);
   insertedShareData[0].sharedTimes = sharedTimes[0].shared_times;
-  insertedShareData[0].location = {};
-  insertedShareData[0].location.lat = insertedShareData[0].latitude;
-  insertedShareData[0].location.lng = insertedShareData[0].longitude;
-  delete insertedShareData[0]["latitude"];
-  delete insertedShareData[0]["longitude"];
-  return res.status(200).send({ data: insertedShareData[0] });
+  const respondedResult = formLocationInfo(insertedShareData[0]);
+  return res.status(200).send({ data: respondedResult });
 };
 
 const checkMemberType = ({ member_type }) => {
@@ -153,6 +150,16 @@ const formOwnPortionsData = (shareId, ownPortions, userId) => {
   return [shareId, userId, "active", ownPortions, now, now];
 };
 
+const formLocationInfo = (shareFoodsDataObj) => {
+  console.log({ formLocationInfo: shareFoodsDataObj });
+  shareFoodsDataObj.location = {};
+  shareFoodsDataObj.location.lat = shareFoodsDataObj.latitude;
+  shareFoodsDataObj.location.lng = shareFoodsDataObj.longitude;
+  delete shareFoodsDataObj["latitude"];
+  delete shareFoodsDataObj["longitude"];
+  return shareFoodsDataObj;
+};
+
 const shareSearchFlow = async (req, res) => {
   console.log({ shareLaunchFlow: "shareSearch Flow" });
   const shareSearchDataPack = req.body;
@@ -206,8 +213,16 @@ const formShareJoinDataToDb = ({ share_id, taken_portions }, participantId) => {
   return [share_id, participantId, taken_portions, now, now, "active"];
 };
 
+const shareDetailFlow = async (req, res) => {
+  const { shareId } = req.query;
+  const shareDteailInfo = await getShareDetailInfo(shareId);
+  const respondedResult = formLocationInfo(shareDteailInfo[0]);
+  return res.status(200).send({ data: respondedResult });
+};
+
 module.exports = {
   shareLaunchFlow,
   shareSearchFlow,
   shareJoinFlow,
+  shareDetailFlow,
 };
