@@ -22,7 +22,7 @@ const StepOne = ({ next }) => {
   const validationSchema = object({
     category: string().required("必填"),
     name: string().required("必填"),
-    expiry_date: string().required("必填"),
+    expiry_date: string().nullable().required("必填"),
   });
 
   const { handleChange, handleSubmit, setFieldValue, values, errors, touched } =
@@ -107,13 +107,15 @@ const StepOne = ({ next }) => {
         </LocalizationProvider>
         <Uploader color="primary" />
       </FormfieldWrapper>
-      <Button
-        text="下一步"
-        type="submit"
-        variant="outlined"
-        color="secondary"
-        className="share-form-button"
-      />
+      <div className="share-form-button">
+        <Button
+          text="下一步"
+          type="submit"
+          variant="outlined"
+          color="secondary"
+          className="share-form-button"
+        />
+      </div>
     </form>
   );
 };
