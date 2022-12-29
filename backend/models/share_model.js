@@ -170,6 +170,33 @@ const insertShareJoinToDb = async (shareJoinDataToDb) => {
   }
 };
 
+const getShareDetailInfo = async (shareId) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function getShareDetailInfo");
+    const selectShareDetailQuery = `WITH ms_info AS 
+    (SELECT share_id, SUM(taken_portions) AS total_taken_portions 
+     FROM matched_share GROUP BY share_id)
+    SELECT sf.user_id, sf.name, sf.category, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date,
+     sf.county, sf.district, sf.address, sf.meet_up_datetime, sf.unit_description, sf.total_portions, sf.price, 
+     sf.latitude, sf.longitude, ms.total_taken_portions::int
+    FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
+    WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime;`;
+    const selectedResult = await pgsqlPool
+      .query(selectShareDetailQuery, [shareId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    return selectedResult;
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
+// getShareDetailInfo(37);
+
 module.exports = {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
@@ -179,4 +206,5 @@ module.exports = {
   selectSharesBySearchInfo,
   selectShareById,
   insertShareJoinToDb,
+  getShareDetailInfo,
 };

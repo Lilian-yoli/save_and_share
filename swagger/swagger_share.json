@@ -138,11 +138,11 @@
     "/share/share-join": {
       "post": {
         "tags": [
-          "launch-join"
+          "share-join"
         ],
         "summary": "User join a share campaign",
         "description": "Join a share campaign through share id",
-        "operationId": "launch-join",
+        "operationId": "share-join",
         "requestBody": {
           "description": "share id of share campaign",
           "content": {
@@ -209,6 +209,53 @@
                       "example": "Demanded portions is greater than total portions."
                     }
                   }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/share/share-detail": {
+      "post": {
+        "tags": [
+          "share-detail"
+        ],
+        "summary": "Search share campaigns",
+        "description": "Search share campaigns with basic info",
+        "operationId": "share-detail",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "query",
+            "description": "Get detail info by share id",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response-share-detail"
                 }
               }
             }
@@ -536,6 +583,95 @@
             "type": "string",
             "example": "active"
           }
+        }
+      },
+      "response-share-detail": {
+        "required": [
+          "user_id",
+          "name",
+          "category",
+          "expiry_date",
+          "county",
+          "district",
+          "meet_up_datetime",
+          "unit_description",
+          "total_portions",
+          "price",
+          "total_taken_portions"
+        ],
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Dozen of Haggan Daz"
+          },
+          "category": {
+            "type": "string",
+            "example": "零食"
+          },
+          "description": {
+            "type": "string",
+            "example": "12 cups of Haggan Daz"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "county": {
+            "type": "string",
+            "example": "台南市"
+          },
+          "district": {
+            "type": "string",
+            "example": "東區"
+          },
+          "address": {
+            "type": "string",
+            "example": "No.1, Cheng Kung road"
+          },
+          "meet_up_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "unit_description": {
+            "type": "string",
+            "example": "a cup, 450ml"
+          }, 
+          "total_portions": {
+            "type": "integer",
+            "format": "int64",
+            "example": 12
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 100
+          },
+          "location": {
+            "type":"object",
+            "properties": {
+              "lat": {
+                "type": "float",
+                "example": 24.8451128
+              },
+              "lng": {
+                "type": "float",
+                "example": 121.2280722
+              }
+            }
+          },
+          "total_taken_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "1"
+          } 
         }
       },
       "ApiResponse": {
