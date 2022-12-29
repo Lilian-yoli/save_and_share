@@ -10,15 +10,12 @@ import { useState, useContext } from "react";
 import { userContext } from "../../contexts/userContext";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
 
 const SignInForm = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const { setCurrentUser } = useContext(userContext);
-
-  const navigate = useNavigate();
+  const { handleLogin } = useContext(userContext);
 
   const validationSchema = object({
     email: string().email("不符 Eamil 格式").required("必填"),
@@ -38,8 +35,7 @@ const SignInForm = () => {
         } = await POST("user/signin", { ...values, provider: 'native' });
         const daysToExpire = dayjs.duration(token_expired, "seconds").asDays();
         Cookies.set("Share&SaveToken", access_token, { expires: daysToExpire });
-        setCurrentUser({ id: user.id, isLoggedIn: true });
-        navigate("/");
+        handleLogin(user.id)
       } catch (error) {
         const errorMsg = convertErrorMessages(error);
         setErrorMsg(errorMsg);

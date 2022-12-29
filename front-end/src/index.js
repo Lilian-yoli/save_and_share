@@ -22,7 +22,7 @@ root.render(
   <BrowserRouter>
     <ThemeProvider theme={theme}>
       <UserProvider>
-          <App />
+        <App />
       </UserProvider>
     </ThemeProvider>
   </BrowserRouter>
