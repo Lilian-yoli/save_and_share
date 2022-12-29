@@ -76,7 +76,7 @@ const StepTwo = ({ next, previous }) => {
           sx={{ marginTop: "20px" }}
         />
       </FormfieldWrapper>
-      <div className="share-form-button">
+      <div className="share-form-buttons">
         <Button
           onClickHandler={previous}
           type="button"

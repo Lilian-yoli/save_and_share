@@ -10,8 +10,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useShareStore } from "../../stores/shareStore";
 import { POST } from "../../utils/API";
+
+dayjs.extend(utc)
 
 const StepThree = ({ next, previous }) => {
   const [districtList, setDistrictList] = useState([]);
@@ -42,14 +45,13 @@ const StepThree = ({ next, previous }) => {
         // ref. https://developers.google.com/maps/documentation/geocoding/requests-geocoding
         // use geocoding api to convert address to longitude & latitude
         const { data: { results } } = await POST(`https://maps.googleapis.com/maps/api/geocode/json?address=台灣${values.county}${values.district}${values.address}&key=${process.env.REACT_APP_GOOGLE_MAP}`);
-        const { lat, lng } = results[0].geometry.location;
-        values.latitude = lat;
-        values.longitude = lng;
+        const location = results[0].geometry.location;
+        values.location = location;
 
         let { meet_up_date, meet_up_time } = values;
         meet_up_date = dayjs(meet_up_date).format('YYYY-MM-DD');
-        meet_up_time = dayjs(meet_up_time).format('HH:mm:ssZ[Z]');
-        const meet_up_datetime = `${meet_up_date}T${meet_up_time}`
+        const formattedMeetUpTime = dayjs(meet_up_time).format('HH:mm:ss');
+        const meet_up_datetime = dayjs(`${meet_up_date} ${formattedMeetUpTime}`).utc(true).format();
         values.meet_up_date = meet_up_date;
         values.meet_up_time = meet_up_time
         saveMeetUpInfo({ ...values, meet_up_datetime });
@@ -61,12 +63,11 @@ const StepThree = ({ next, previous }) => {
   useEffect(() => {
     if (!values.county) return;
 
-    setFieldValue("district", "");
-
     const newDistrictList = CountyDistrictList.filter(
       (county) => county.CityName === values.county
     )[0]["AreaList"];
     setDistrictList(newDistrictList);
+
   }, [values.county, setFieldValue]);
 
   return (
@@ -161,7 +162,7 @@ const StepThree = ({ next, previous }) => {
           />
         </LocalizationProvider>
       </FormfieldWrapper>
-      <div className="share-form-button">
+      <div className="share-form-buttons">
         <Button
           onClickHandler={previous}
           type="button"
