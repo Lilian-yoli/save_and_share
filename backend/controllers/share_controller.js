@@ -4,6 +4,7 @@ const ajv = new Ajv({ allErrors: true }); // options can be passed, e.g. {allErr
 const {
   shareLaunchSchema,
   shareSearchSchema,
+  shareJoinSchema,
 } = require("../schemas/share_schema");
 const {
   selectMemberInfoById,
@@ -11,6 +12,8 @@ const {
   updateMemberTypeInfo,
   selectSharesBySearchInfo,
   insertOwnPortionsToMatchedShare,
+  selectShareById,
+  insertShareJoinToDb,
 } = require("../models/share_model");
 addFormats(ajv, {
   mode: "fast",
@@ -29,7 +32,7 @@ const shareLaunchFlow = async (req, res) => {
     shareLaunchDataPack
   );
   if (validatedResult.error) {
-    return res.status(400).send(validatedResult);
+    return res.status(422).send(validatedResult);
   }
   const memberInfo = await selectMemberInfoById(userId);
   const sharableCheck = checkUserSharable(memberInfo[0], sharableCheckerFn);
@@ -158,7 +161,7 @@ const shareSearchFlow = async (req, res) => {
     shareSearchDataPack
   );
   if (validatedResult.error) {
-    return res.status(400).send(validatedResult);
+    return res.status(422).send(validatedResult);
   }
   const searchResult = await selectSharesBySearchInfo(shareSearchDataPack);
   return res.status(200).send({ data: searchResult });
@@ -166,7 +169,45 @@ const shareSearchFlow = async (req, res) => {
 
 // console.log(validateInputData(shareSearchSchema, inputData));
 
+const shareJoinFlow = async (req, res) => {
+  const shareJoinDataPack = req.body;
+  const { taken_portions } = req.body;
+  const validatedResult = validateInputData(shareJoinSchema, shareJoinDataPack);
+  if (validatedResult.error) {
+    return res.status(422).send(validatedResult);
+  }
+  const shareInfoFromDb = await selectShareById(shareJoinDataPack);
+  const theShareInfo = shareInfoFromDb[0];
+  if (!theShareInfo) {
+    return res.status(500).send({ error: "Internal server error." });
+  } else if (
+    theShareInfo.total_taken_portions + taken_portions >
+    theShareInfo.total_portions
+  ) {
+    return res
+      .status(422)
+      .send({ error: "Demanded portions is greater than total portions." });
+  }
+  const launcherId = theShareInfo.user_id;
+  const participantId = req.user.id;
+  const shareJoinDataToDb = formShareJoinDataToDb(
+    shareJoinDataPack,
+    participantId
+  );
+  const insertedNRespondedData = await insertShareJoinToDb(shareJoinDataToDb);
+  const respondedData = insertedNRespondedData[0];
+  respondedData.share_launcher = launcherId;
+  console.log({ insertedNRespondedData: respondedData });
+  return res.status(200).send({ data: respondedData });
+};
+
+const formShareJoinDataToDb = ({ share_id, taken_portions }, participantId) => {
+  const now = new Date();
+  return [share_id, participantId, taken_portions, now, now, "active"];
+};
+
 module.exports = {
   shareLaunchFlow,
   shareSearchFlow,
+  shareJoinFlow,
 };

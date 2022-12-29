@@ -197,6 +197,22 @@
               }
             }
           },
+          "422": {
+            "description": "Content cannot process",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Demanded portions is greater than total portions."
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server Error",
             "content": {
@@ -459,11 +475,17 @@
       },
       "share-join": {
         "required": [
-          "share_id"
+          "share_id",
+          "taken_portions"
         ],
         "type": "object",
         "properties": {
           "share_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": "1"
+          },
+          "taken_portions": {
             "type": "integer",
             "format": "int32",
             "example": "1"
@@ -481,6 +503,11 @@
             "type": "integer",
             "format": "int32",
             "example": 1
+          },
+          "taken_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "1"
           },
           "status": {
             "type": "string",
