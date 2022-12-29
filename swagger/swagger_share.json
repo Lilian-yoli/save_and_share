@@ -504,7 +504,7 @@
             "format": "int32",
             "example": 1
           },
-          "taken_portions": {
+          "share_launcher": {
             "type": "integer",
             "format": "int32",
             "example": "1"
