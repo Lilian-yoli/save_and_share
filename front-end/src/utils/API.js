@@ -12,6 +12,9 @@ const API = axios.create({
 API.interceptors.request.use(
   (config) => {
     const token = Cookies.get("Share&SaveToken");
+    const { url } = config;
+    const isGoogleApi = url.includes('googleapis');
+    if (isGoogleApi) return config;
     if (token) config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },

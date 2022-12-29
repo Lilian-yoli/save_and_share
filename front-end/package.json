@@ -26,7 +26,8 @@
     "sass": "^1.55.0",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.1.5"
   },
   "scripts": {
     "start": "port=3000 react-scripts start",

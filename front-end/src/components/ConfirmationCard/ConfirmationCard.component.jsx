@@ -1,6 +1,17 @@
 import "./ConfirmationCard.styles.scss";
+import dayjs from 'dayjs';
 
-const ConfirmationCard = () => {
+const ConfirmationCard = ({ foodInfo, shareInfo, meetUpInfo }) => {
+
+  const { name } = foodInfo;
+  const { total_portions, unit_description, price } = shareInfo;
+  const { county, district, address, meet_up_date, meet_up_time } = meetUpInfo;
+
+  const meetUpDateText = dayjs(meet_up_date).format('YYYY 年 M 月 D 日');
+  const meetUpTimeText = dayjs(meet_up_time).format('h:mm A');
+
+  const pricePerPortion = Math.round(price / total_portions);
+
   return (
     <div className="confirmation-card">
       <p className="confirmation-card-title">請確認以下資訊</p>
@@ -8,22 +19,22 @@ const ConfirmationCard = () => {
         <div>
           <p>食物資訊</p>
           <ul>
-            <li>牛奶 20 盒</li>
+            <li>{name}</li>
           </ul>
         </div>
         <div>
           <p>分購資訊</p>
           <ul>
-            <li>分購總人數: 5 人</li>
-            <li>每份金額: 220 元</li>
+            <li>分購總份數:  {total_portions} {unit_description}</li>
+            <li>每份金額: {pricePerPortion} 元</li>
           </ul>
         </div>
         <div>
           <p>面交資訊</p>
           <ul>
-            <li>地址: 台中市西區中山路23號</li>
-            <li>日期: 2022/12/2</li>
-            <li>時間: 18:00</li>
+            <li>地址: {county}{district}{address}</li>
+            <li>日期: {meetUpDateText}</li>
+            <li>時間: {meetUpTimeText}</li>
           </ul>
         </div>
       </div>

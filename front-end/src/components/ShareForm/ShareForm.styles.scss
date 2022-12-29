@@ -6,20 +6,20 @@
     color: #555;
     font-size: 1.2rem;
   }
-}
 
-.share-form-button {
-  position: absolute !important;
-  right: 0;
-  bottom: -70px;
-}
 
-.confirmation {
-  position: relative;
+  &-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 50px 5px 0;
+  }
 
-  button {
-    margin-top: 40px;
-    position: absolute;
-    right: 0;
+  &-button {
+    display: flex;
+    justify-content: flex-end;
+    margin: 50px 5px 0;
   }
 }
+
+
+
