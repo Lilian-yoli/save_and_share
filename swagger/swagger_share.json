@@ -353,7 +353,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response-share-info-summary"
+                  "$ref": "#/components/schemas/response-share-join-info-summary"
                 }
               }
             }
@@ -802,6 +802,74 @@
             "format": "int32",
             "example": "1"
           } 
+        }
+      },
+      "response-share-join-info-summary": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/response-share-join-summary"
+        }
+      },
+      "response-share-join-summary": {
+        "required": [
+          "share_id",
+          "name",
+          "description",
+          "expiry_date",
+          "meet_up_datetime",
+          "price",
+          "unit_description",
+          "total_portions",
+          "total_taken_portions",
+          "matched_id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Dozen of Haggan Daz"
+          },
+          "description": {
+            "type": "string",
+            "example": "零食"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-12-06"
+          },
+          "share_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "meet_up_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32",
+            "example": 100
+          },
+          "unit_description": {
+            "type": "string",
+            "example": "個"
+          },
+          "total_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "12"
+          },
+          "total_taken_portions": {
+            "type": "integer",
+            "format": "int32",
+            "example": "1"
+          },
+          "matched_id": {
+            "type": "integer",
+            "example": 1
+          }
         }
       },
       "ApiResponse": {
