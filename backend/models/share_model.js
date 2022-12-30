@@ -218,6 +218,29 @@ const getPersonalLaunchInfo = async (userId) => {
   }
 };
 
+const getPersonalJoinedInfo = async (userId) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function getPersonalJoinedInfo");
+    const selectedLauncherQuery = `WITH match_info AS
+    (SELECT share_id, SUM(taken_portions) AS total_taken_portions FROM matched_share WHERE participant_id = $1 GROUP BY share_id)
+    SELECT sf.id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
+    sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int 
+    from shared_foods sf INNER JOIN match_info ms ON sf.id = ms.share_id
+    WHERE sf.user_id <> $1 ORDER BY sf.meet_up_datetime;`;
+    const selectedResult = await pgsqlPool
+      .query(selectedLauncherQuery, [userId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    return selectedResult;
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
 module.exports = {
   selectMemberInfoById,
   insertShareLaunchDataToDb,
@@ -229,4 +252,5 @@ module.exports = {
   insertShareJoinToDb,
   getShareDetailInfo,
   getPersonalLaunchInfo,
+  getPersonalJoinedInfo,
 };
