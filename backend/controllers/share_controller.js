@@ -15,6 +15,7 @@ const {
   selectShareById,
   insertShareJoinToDb,
   getShareDetailInfo,
+  getPersonalLaunchInfo,
 } = require("../models/share_model");
 addFormats(ajv, {
   mode: "fast",
@@ -220,9 +221,16 @@ const shareDetailFlow = async (req, res) => {
   return res.status(200).send({ data: respondedResult });
 };
 
+const personalLaunchFlow = async (req, res) => {
+  const userId = req.user.id;
+  const personalLaunchInfo = await getPersonalLaunchInfo(userId);
+  return res.status(200).send({ data: personalLaunchInfo });
+};
+
 module.exports = {
   shareLaunchFlow,
   shareSearchFlow,
   shareJoinFlow,
   shareDetailFlow,
+  personalLaunchFlow,
 };

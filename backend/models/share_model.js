@@ -136,7 +136,7 @@ const selectShareById = async ({ share_id }) => {
        FROM matched_share GROUP BY share_id)
       SELECT sf.id, sf.user_id, sf.total_portions, ms.total_taken_portions::int
       FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
-      WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime;`;
+      WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime ORDER BY sf.meet_up_datetime;`;
     const selectedResult = await pgsqlPool
       .query(selectShareByIdQuery, [share_id])
       .then((result) => {
@@ -195,7 +195,28 @@ const getShareDetailInfo = async (shareId) => {
   }
 };
 
-// getShareDetailInfo(37);
+const getPersonalLaunchInfo = async (userId) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function getPersonalLaunchInfo");
+    const selectedLauncherQuery = `WITH match_info AS
+     (SELECT share_id, SUM(taken_portions) AS total_taken_portions FROM matched_share GROUP BY share_id)
+     SELECT sf.id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
+     sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int 
+     from shared_foods sf LEFT JOIN match_info ms ON sf.id = ms.share_id
+     WHERE sf.user_id = $1 ORDER BY sf.meet_up_datetime;`;
+    const selectedResult = await pgsqlPool
+      .query(selectedLauncherQuery, [userId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    return selectedResult;
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
 
 module.exports = {
   selectMemberInfoById,
@@ -207,4 +228,5 @@ module.exports = {
   selectShareById,
   insertShareJoinToDb,
   getShareDetailInfo,
+  getPersonalLaunchInfo,
 };
