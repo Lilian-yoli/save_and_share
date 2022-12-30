@@ -36,10 +36,6 @@ router
   .put(authentication(), wrapAsync(deleteLaunchedShareFlow));
 
 router
-  .route("/share/delete-launched-share")
-  .put(authentication(), wrapAsync(deleteLaunchedShareFlow));
-
-router
   .route("/share/delete-joined-share")
   .put(authentication(), wrapAsync(deleteJoinedShareFlow));
 
