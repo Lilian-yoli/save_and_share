@@ -17,6 +17,7 @@ const {
   getShareDetailInfo,
   getPersonalLaunchInfo,
   getPersonalJoinedInfo,
+  inactivateShareInfo,
 } = require("../models/share_model");
 addFormats(ajv, {
   mode: "fast",
@@ -234,6 +235,14 @@ const personalJoinFlow = async (req, res) => {
   return res.status(200).send({ data: personalJoinedInfo });
 };
 
+const deleteLaunchedShareFlow = async (req, res) => {
+  const { shareId } = req.query;
+  const userId = req.user.id;
+  const inactiveShare = inactivateShareInfo(shareId);
+  const personalLaunchInfo = await getPersonalLaunchInfo(userId);
+  return res.status(200).send({ data: personalLaunchInfo });
+};
+
 module.exports = {
   shareLaunchFlow,
   shareSearchFlow,
@@ -241,4 +250,5 @@ module.exports = {
   shareDetailFlow,
   personalLaunchFlow,
   personalJoinFlow,
+  deleteLaunchedShareFlow,
 };

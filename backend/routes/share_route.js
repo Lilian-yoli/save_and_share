@@ -7,6 +7,7 @@ const {
   shareDetailFlow,
   personalLaunchFlow,
   personalJoinFlow,
+  deleteLaunchedShareFlow,
 } = require("../controllers/share_controller");
 
 router
@@ -28,5 +29,13 @@ router
 router
   .route("/share/personal-join")
   .get(authentication(), wrapAsync(personalJoinFlow));
+
+router
+  .route("/share/delete-launched-share")
+  .put(authentication(), wrapAsync(deleteLaunchedShareFlow));
+
+router
+  .route("/share/delete-launched-share")
+  .put(authentication(), wrapAsync(deleteLaunchedShareFlow));
 
 module.exports = router;

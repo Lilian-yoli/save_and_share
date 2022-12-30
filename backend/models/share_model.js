@@ -136,7 +136,8 @@ const selectShareById = async ({ share_id }) => {
        FROM matched_share GROUP BY share_id)
       SELECT sf.id, sf.user_id, sf.total_portions, ms.total_taken_portions::int
       FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
-      WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime ORDER BY sf.meet_up_datetime;`;
+      WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime AND sf.status = 'active' 
+      ORDER BY sf.meet_up_datetime;`;
     const selectedResult = await pgsqlPool
       .query(selectShareByIdQuery, [share_id])
       .then((result) => {
@@ -180,7 +181,7 @@ const getShareDetailInfo = async (shareId) => {
      sf.county, sf.district, sf.address, sf.meet_up_datetime, sf.unit_description, sf.total_portions, sf.price, 
      sf.latitude, sf.longitude, ms.total_taken_portions::int
     FROM shared_foods sf LEFT JOIN ms_info ms ON sf.id = ms.share_id
-    WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime;`;
+    WHERE sf.id = $1 AND NOW() <= sf.meet_up_datetime AND sf.status = 'active';`;
     const selectedResult = await pgsqlPool
       .query(selectShareDetailQuery, [shareId])
       .then((result) => {
@@ -203,7 +204,7 @@ const getPersonalLaunchInfo = async (userId) => {
      SELECT sf.id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
      sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.total_taken_portions::int 
      from shared_foods sf LEFT JOIN match_info ms ON sf.id = ms.share_id
-     WHERE sf.user_id = $1 AND sf.meet_up_datetime >= NOW() 
+     WHERE sf.user_id = $1 AND sf.status = 'active' AND sf.meet_up_datetime >= NOW() 
      ORDER BY sf.meet_up_datetime;`;
     const selectedResult = await pgsqlPool
       .query(selectedLauncherQuery, [userId])
@@ -223,7 +224,7 @@ const getPersonalJoinedInfo = async (userId) => {
   try {
     log.info("SHARE-MODEL", "Begin of the function getPersonalJoinedInfo");
     const selectedLauncherQuery = `WITH match_info AS
-    (SELECT id AS match_id, share_id, participant_id, SUM(taken_portions) OVER (PARTITION BY share_id) FROM matched_share)
+    (SELECT id AS match_id, share_id, participant_id, SUM(taken_portions) OVER (PARTITION BY share_id) FROM matched_share WHERE status = 'active')
     SELECT sf.id AS share_id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
         sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.sum::int AS total_taken_portions, ms.match_id
     FROM shared_foods sf INNER JOIN match_info ms ON sf.id = ms.share_id
@@ -243,7 +244,36 @@ const getPersonalJoinedInfo = async (userId) => {
   }
 };
 
-// getPersonalJoinedInfo(3);
+const inactivateShareInfo = async (shareId) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function inactivateShareInfo");
+    const updatedSharedFoodsQuery = `UPDATE shared_foods SET status = 'active' WHERE id = $1 RETURNING id;`;
+    const updatedMatchedShareQuery = `UPDATE matched_share SET status = 'active' WHERE share_id = $1 RETURNING id;`;
+    const updatedLaunchShareId = await pgsqlPool
+      .query(updatedSharedFoodsQuery, [shareId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    const updatedMatchedShareId = await pgsqlPool
+      .query(updatedMatchedShareQuery, [shareId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    return {
+      launchedShareId: updatedLaunchShareId,
+      matchedSharedId: updatedMatchedShareId,
+    };
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
+inactivateShareInfo(37);
 
 module.exports = {
   selectMemberInfoById,
@@ -257,4 +287,5 @@ module.exports = {
   getShareDetailInfo,
   getPersonalLaunchInfo,
   getPersonalJoinedInfo,
+  inactivateShareInfo,
 };
