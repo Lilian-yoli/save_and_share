@@ -244,28 +244,28 @@ const getPersonalJoinedInfo = async (userId) => {
   }
 };
 
-const inactivateShareInfo = async (shareId) => {
+const inactivateLaunchShareInfo = async (shareId) => {
   try {
     log.info("SHARE-MODEL", "Begin of the function inactivateShareInfo");
-    const updatedSharedFoodsQuery = `UPDATE shared_foods SET status = 'active' WHERE id = $1 RETURNING id;`;
-    const updatedMatchedShareQuery = `UPDATE matched_share SET status = 'active' WHERE share_id = $1 RETURNING id;`;
+    const updatedSharedFoodsQuery = `UPDATE shared_foods SET status = 'inactive' WHERE id = $1 RETURNING id;`;
+    const updatedMatchedShareQuery = `UPDATE matched_share SET status = 'inactive' WHERE share_id = $1 RETURNING id;`;
     const updatedLaunchShareId = await pgsqlPool
       .query(updatedSharedFoodsQuery, [shareId])
       .then((result) => {
-        console.log({ selectedResult: result.rows });
+        console.log({ updatedLaunchShareId: result.rows });
         return result.rows;
       })
       .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
-    const updatedMatchedShareId = await pgsqlPool
+    const updatedMatchedShareIds = await pgsqlPool
       .query(updatedMatchedShareQuery, [shareId])
       .then((result) => {
-        console.log({ selectedResult: result.rows });
+        console.log({ updatedMatchedShareId: result.rows });
         return result.rows;
       })
       .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
     return {
       launchedShareId: updatedLaunchShareId,
-      matchedSharedId: updatedMatchedShareId,
+      matchedSharedId: updatedMatchedShareIds,
     };
   } catch (error) {
     log.error("SHARE-MODEL", "Error message: %j", error);
@@ -273,7 +273,24 @@ const inactivateShareInfo = async (shareId) => {
   }
 };
 
-inactivateShareInfo(37);
+const inactivateJoinedShareInfo = async (matchId) => {
+  try {
+    log.info("SHARE-MODEL", "Begin of the function inactivateShareInfo");
+    const updatedMatchedShareQuery = `UPDATE matched_share SET status = 'inactive' 
+     WHERE id = $1 RETURNING id;`;
+    const updatedMatchedShareId = await pgsqlPool
+      .query(updatedMatchedShareQuery, [matchId])
+      .then((result) => {
+        console.log({ updatedMatchedShareId: result.rows });
+        return result.rows;
+      })
+      .catch((e) => log.error("SHARE-MODEL", "Error message: %j", e.stack));
+    return updatedMatchedShareId;
+  } catch (error) {
+    log.error("SHARE-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
 
 module.exports = {
   selectMemberInfoById,
@@ -287,5 +304,6 @@ module.exports = {
   getShareDetailInfo,
   getPersonalLaunchInfo,
   getPersonalJoinedInfo,
-  inactivateShareInfo,
+  inactivateLaunchShareInfo,
+  inactivateJoinedShareInfo,
 };
