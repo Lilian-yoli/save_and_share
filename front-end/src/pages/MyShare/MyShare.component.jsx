@@ -1,7 +1,7 @@
 import ShareCard from "../../components/ShareCard/ShareCard.component"
 import { PageWrapper } from "../../components/Layout/PageWrapper.styles";
 import { useState, useEffect } from 'react';
-import { GET } from "../../utils/API";
+import { GET, PUT } from "../../utils/API";
 
 
 const MySharePage = () => {
@@ -15,10 +15,14 @@ const MySharePage = () => {
     fetchMyShareList();
   }, [])
 
+  const deleteShare = async (id) => {
+    await PUT('/share/delete-launched-share', null, { params: { shareId: id } })
+  }
+
   return (
     <PageWrapper>
       <h2>發起的分購</h2>
-      {shareList?.length > 0 && shareList.map((data, index) => <ShareCard key={index} info={data} shadow="none" cancelable={true} />)}
+      {shareList?.length > 0 && shareList.map((data, index) => <ShareCard key={index} info={data} shadow="none" cancelable={true} action={() => deleteShare(data.id)} />)}
     </PageWrapper>
   )
 }
