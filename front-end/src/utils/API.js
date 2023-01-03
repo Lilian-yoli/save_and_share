@@ -32,8 +32,8 @@ async function POST(path, form) {
   return response;
 }
 
-async function PUT(path, form) {
-  const response = await API.put(path, form);
+async function PUT(path, form, params) {
+  const response = await API.put(path, form, params);
   return response;
 }
 
