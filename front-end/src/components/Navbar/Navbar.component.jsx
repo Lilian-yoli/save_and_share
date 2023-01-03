@@ -8,11 +8,22 @@ import {
   BrandName,
 } from "./Navbar.styles";
 import AvatarMenu from "../AvatarMenu/AvatarMenu.component";
+import { useNavigate } from "react-router-dom";
+import { useSearchStore } from "../../stores/searchStore";
+
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const clearSearch = useSearchStore((state) => state.clearSearchStore);
+
+  const goToHome = () => {
+    clearSearch();
+    navigate('/')
+  }
+
   return (
     <NavContainer>
-      <div>
+      <div onClick={goToHome}>
         <LogoContainer>
           <img src={logo} alt="pizza in slices" />
         </LogoContainer>
