@@ -5,7 +5,7 @@ import Button from "../../components/Button/Button.component";
 import dayjs from "dayjs";
 
 
-const ShareCard = ({ info, shadow, cancelable }) => {
+const ShareCard = ({ info, shadow, cancelable, action }) => {
 
   let { name, expiry_date, description, price, unit_description, total_portions, total_taken_portions } = info;
   const pricePerPortion = Math.round(price / total_portions);
@@ -35,7 +35,7 @@ const ShareCard = ({ info, shadow, cancelable }) => {
             {remainingPortions.map((_, index) => (<LocalPizzaOutlinedIcon key={index} />))}
           </div>
         </ContentWrapper>
-        {cancelable && <Button text="刪除分購" variant="outlined" color="danger" />}
+        {cancelable && <Button onClickHandler={action} text="刪除分購" variant="outlined" color="danger" />}
       </ShareCardWrapper>
 
     </>
