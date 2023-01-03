@@ -6,12 +6,18 @@ import { FormfieldWrapper } from "./SearchForm.styles";
 import CountyDistrictList from "../../assets/data/CountyDistrictData.json";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { POST } from "../../utils/API";
+import { useSearchStore } from "../../stores/searchStore";
 
 const foodCategories = ["生鮮魚肉", "蔬菜", "水果", "零食", "飲品", "其他"];
 
 const SearchForm = ({ variant }) => {
   const [districtList, setDistrictList] = useState([]);
   const navigate = useNavigate();
+
+  const setResult = useSearchStore((state) => state.setSearchResult);
+  const setParams = useSearchStore((state) => state.setSearchParams);
+  const searchParams = useSearchStore((state) => state.searchParams);
 
   const validationSchema = object({
     category: string().required("請選擇食物類別"),
@@ -23,23 +29,26 @@ const SearchForm = ({ variant }) => {
   const { values, handleChange, handleSubmit, touched, errors, setFieldValue } =
     useFormik({
       initialValues: {
-        category: "",
-        name: "",
-        county: "",
-        district: "",
+        category: searchParams.category,
+        name: searchParams.name,
+        county: searchParams.county,
+        district: searchParams.district,
       },
       validationSchema: validationSchema,
-      onSubmit: (values) => {
-        //TODO: API request
-        navigate("/search");
-        // category=${values.category}&name=${values.name}&county=${values.county}&district=${values.district}
+      onSubmit: async (values) => {
+        try {
+          setParams(values);
+          const { data: { data } } = await POST('share/share-search', values);
+          setResult(data);
+          navigate("/search");
+        } catch (error) {
+          console.error(error);
+        }
       },
     });
 
   useEffect(() => {
     if (!values.county) return;
-
-    setFieldValue("district", "");
 
     const newDistrictList = CountyDistrictList.filter(
       (county) => county.CityName === values.county

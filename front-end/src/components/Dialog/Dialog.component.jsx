@@ -4,7 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 
-export default function SSDialog({ content, open, action, buttonText }) {
+export default function SSDialog({ content, open, action, cancel, buttonText }) {
   return (
     <div>
       <Dialog
@@ -19,7 +19,7 @@ export default function SSDialog({ content, open, action, buttonText }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClickHandler={action}>{buttonText?.negative}</Button>
+          <Button onClickHandler={cancel} text={buttonText?.negative} />
           <Button
             onClickHandler={action}
             autoFocus
