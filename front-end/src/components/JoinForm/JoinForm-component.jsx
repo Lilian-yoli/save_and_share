@@ -11,8 +11,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const JoinForm = ({ share_id, shareDetail }) => {
-  const { name, description, price, expiry_date, meet_up_datetime, county, district, address } = shareDetail ?? {};
-
+  const { name, description, price, expiry_date, meet_up_datetime, county, district, address, total_portions, unit_description } = shareDetail ?? {};
+  const pricePerPortion = Math.round(price / total_portions);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const JoinForm = ({ share_id, shareDetail }) => {
         <FormContentWrapper>
           <p>名稱:  <span>{name}</span></p>
           <p>食物描述:  <span>{description}</span></p>
-          <p>價格: <span>{price} 元</span></p>
+          <p>價格: <span>{pricePerPortion} 元 / {unit_description}</span></p>
           <p>有效期限: <span>{dayjs(expiry_date).format('YYYY年M月D日')}</span></p>
           <p>面交日期 & 時間: <span>{dayjs.utc(meet_up_datetime).format('YYYY年M月D日 h:mm A')}</span></p>
           <p>面交地點: <span>{county}{district}{address}</span></p>
