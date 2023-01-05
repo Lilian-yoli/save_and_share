@@ -23,6 +23,7 @@ const MySharePage = () => {
     <PageWrapper>
       <h2>發起的分購</h2>
       {shareList?.length > 0 && shareList.map((data, index) => <ShareCard key={index} info={data} shadow="none" cancelable={true} action={() => deleteShare(data.id)} />)}
+      {shareList?.length === 0 && (<p>...尚未發起任何分購</p>)}
     </PageWrapper>
   )
 }
