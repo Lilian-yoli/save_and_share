@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
 
   const handleLogin = (userId) => {
     setCurrentUser({ id: userId, isLoggedIn: true })
-    const origin = location.state?.from?.pathname;
+    const origin = location.state?.from?.pathname ?? '/';
     navigate(origin);
   }
 

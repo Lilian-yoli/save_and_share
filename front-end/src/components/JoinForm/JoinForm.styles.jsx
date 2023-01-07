@@ -25,4 +25,7 @@ export const FormContentWrapper = styled.div`
     }
   }
 
+  p + div {
+    margin-top: 25px;
+  }
 `

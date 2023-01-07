@@ -21,7 +21,8 @@ const MyPurchasePage = () => {
   return (
     <PageWrapper>
       <h2>已加入的分購</h2>
-      {purchaseList?.length && purchaseList.map((data, index) => <ShareCard key={index} info={data} shadow="none" cancelable={true} action={() => deletePurchase(data.share_id)} />)}
+      {purchaseList?.length > 0 && purchaseList.map((data, index) => <ShareCard key={index} info={data} shadow="none" cancelable={true} action={() => deletePurchase(data.share_id)} />)}
+      {purchaseList?.length === 0 && (<p>...尚未加入任何分購</p>)}
     </PageWrapper>
   )
 }

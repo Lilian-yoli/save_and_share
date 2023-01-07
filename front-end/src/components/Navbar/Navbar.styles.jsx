@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export const NavContainer = styled.nav`
   position: sticky;
-  z-index: 100;
+  z-index: 999;
   top: 0;
   display: flex;
   justify-content: space-between;

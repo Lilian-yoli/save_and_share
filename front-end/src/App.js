@@ -12,7 +12,7 @@ import MyPurchasePage from "./pages/MyPurchase/MyPurchase.component";
 import SearchDetail from "./pages/SearchDetail/SearchDetail.component";
 import { useContext } from "react";
 import { userContext } from "./contexts/userContext";
-
+import { useSearchStore } from "./stores/searchStore";
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useContext(userContext);
@@ -21,11 +21,17 @@ const ProtectedRoute = ({ children }) => {
   if (!currentUser.isLoggedIn) {
     return <Navigate to="/sign-in" replace state={{ from: location }} />
   }
-
   return children;
 }
 
 function App() {
+  const location = useLocation();
+  const clearSearch = useSearchStore((state) => state.clearSearchStore);
+
+  if (location.pathname !== '/search') {
+    clearSearch();
+  }
+
   return (
     <>
       <Navbar />

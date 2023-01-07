@@ -5,7 +5,7 @@ const initialState = {
     category: "",
     name: "",
     county: "",
-    distirct: ""
+    district: ""
   },
   searchResultList: []
 };
