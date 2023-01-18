@@ -228,7 +228,7 @@ const getPersonalJoinedInfo = async (userId) => {
     SELECT sf.id AS share_id, sf.name, sf.description, TO_CHAR(sf.expiry_date, 'yyyy-mm-dd') AS expiry_date, 
         sf.meet_up_datetime, sf.price, sf.unit_description, sf.total_portions, ms.sum::int AS total_taken_portions, ms.match_id
     FROM shared_foods sf INNER JOIN match_info ms ON sf.id = ms.share_id
-    WHERE ms.participant_id = $1 AND sf.user_id <> $1 AND sf.meet_up_datetime >= NOW()
+    WHERE ms.participant_id = $1 AND sf.user_id <> $1 AND sf.meet_up_datetime >= NOW() AND sf.status = 'active'
     ORDER BY meet_up_datetime;`;
     const selectedResult = await pgsqlPool
       .query(selectedLauncherQuery, [userId])
