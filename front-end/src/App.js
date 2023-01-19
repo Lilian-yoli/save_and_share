@@ -13,6 +13,8 @@ import SearchDetail from "./pages/SearchDetail/SearchDetail.component";
 import { useContext } from "react";
 import { userContext } from "./contexts/userContext";
 import { useSearchStore } from "./stores/searchStore";
+import io from "socket.io-client"
+const socket = io.connect("http://localhost:8877")
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useContext(userContext);
