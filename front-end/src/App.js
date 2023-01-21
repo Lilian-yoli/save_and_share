@@ -27,6 +27,10 @@ const ProtectedRoute = ({ children }) => {
 }
 
 function App() {
+  const sendMessage = () => {
+    socket.emit("test_message", {message: "Hello"})
+  }
+  sendMessage();
   const location = useLocation();
   const clearSearch = useSearchStore((state) => state.clearSearchStore);
 
