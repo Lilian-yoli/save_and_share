@@ -33,6 +33,17 @@ cronJobs.forEach((cronFn) => {
   cronFn();
 });
 
+// Error handler
+// should optimize it later
+app.use((err, req, res, next) => {
+  if (err) {
+    console.log({ errorHandler: err.stack });
+    res.status(500).send("Internal Server Error.");
+  } else {
+    next();
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
