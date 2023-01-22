@@ -17,8 +17,13 @@
   "paths": {
     "/share/share-launch": {
       "post": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
-          "launch-share"
+          "share-launch"
         ],
         "summary": "Launch a share campaign",
         "description": "Launch a share campaign with share info",
@@ -137,6 +142,11 @@
     },
     "/share/share-join": {
       "post": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "share-join"
         ],
@@ -229,6 +239,11 @@
     },
     "/share/share-detail": {
       "get": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "share-detail"
         ],
@@ -276,6 +291,11 @@
     },
     "/share/personal-launch": {
       "get": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "personal-launch"
         ],
@@ -341,6 +361,11 @@
     },
     "/share/delete-launched-share": {
       "put": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "delete-launched-share"
         ],
@@ -420,6 +445,11 @@
     },
     "/share/personal-join": {
       "get": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "personal-join"
         ],
@@ -485,6 +515,11 @@
     },
     "/share/delete-joined-share": {
       "put": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "tags": [
           "delete-joined-share"
         ],
@@ -561,9 +596,188 @@
           }
         }
       }
+    },
+    "/share/get-presignedURL": {
+      "post": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "tags": [
+          "get-presignedURL"
+        ],
+        "summary": "get an image presigned url from S3",
+        "description": "get an image presigned url from S3",
+        "operationId": "get-presignedURL",
+        "requestBody": {
+          "description": "filename of the image",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/get-presignedURL-request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/get-presignedURL-response" 
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User without token, or token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Forbidden."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/share/upload-image-presignedURL": {
+      "post": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "tags": [
+          "upload-image-presignedURL"
+        ],
+        "summary": "get presigned URL for uploading image to S3",
+        "description": "get presigned URL for uploading image to S3",
+        "operationId": "upload-image-presignedURL",
+        "requestBody": {
+          "description": "filename of the image",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/get-presignedURL-request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/get-presignedURL-response" 
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User without token, or token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Forbidden."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
+    "securitySchemes": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "share-launch": {
         "required": [
@@ -1030,18 +1244,32 @@
           }
         }
       },
-      "ApiResponse": {
+      "get-presignedURL-response": {
+        "required": [
+          "filename",
+          "presignedURL"
+        ],
         "type": "object",
         "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
+          "filename": {
+            "type": "string",
+            "example": "demo.png"
           },
-          "type": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
+          "presignedURL": {
+            "type": "string",
+            "example": "http://bucket.s3.region...."
+          }
+        }
+      },
+      "get-presignedURL-request": {
+        "required": [
+          "filename"
+        ],
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "example": "demo.png"
           }
         }
       }
