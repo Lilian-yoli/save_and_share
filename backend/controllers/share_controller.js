@@ -20,6 +20,7 @@ const {
   inactivateLaunchShareInfo,
   inactivateJoinedShareInfo,
 } = require("../models/share_model");
+const { presignedGETURL, presignedImagePUTURL } = require("../S3");
 addFormats(ajv, {
   mode: "fast",
   formats: ["date-time"],
@@ -252,6 +253,20 @@ const deleteJoinedShareFlow = async (req, res) => {
   return res.status(200).send({ data: personalJoinedInfo });
 };
 
+const getPresignedGetURLFlow = async (req, res) => {
+  const { filename } = req.body;
+  const presignedURL = await presignedGETURL(filename);
+  const imageInfo = { presignedURL: presignedURL, filename: filename };
+  return res.status(200).send({ data: imageInfo });
+};
+
+const uploadImagePresignedURLFlow = async (req, res) => {
+  const { filename } = req.body;
+  const presignedURL = await presignedImagePUTURL(filename);
+  const uploadImageInfo = { presignedURL: presignedURL, filename: filename };
+  return res.status(200).send({ data: uploadImageInfo });
+};
+
 module.exports = {
   shareLaunchFlow,
   shareSearchFlow,
@@ -261,4 +276,6 @@ module.exports = {
   personalJoinFlow,
   deleteLaunchedShareFlow,
   deleteJoinedShareFlow,
+  getPresignedGetURLFlow,
+  uploadImagePresignedURLFlow,
 };

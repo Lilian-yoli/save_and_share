@@ -9,6 +9,8 @@ const {
   personalJoinFlow,
   deleteLaunchedShareFlow,
   deleteJoinedShareFlow,
+  getPresignedGetURLFlow,
+  uploadImagePresignedURLFlow,
 } = require("../controllers/share_controller");
 
 router
@@ -38,5 +40,13 @@ router
 router
   .route("/share/delete-joined-share")
   .put(authentication(), wrapAsync(deleteJoinedShareFlow));
+
+router
+  .route("/share/get-presignedURL")
+  .post(authentication(), wrapAsync(getPresignedGetURLFlow));
+
+router
+  .route("/share/upload-image-presignedURL")
+  .post(authentication(), wrapAsync(uploadImagePresignedURLFlow));
 
 module.exports = router;
