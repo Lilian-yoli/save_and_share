@@ -33,7 +33,7 @@ const Navbar = () => {
           <SearchIcon />
           <span>搜尋分購</span>
         </NavTab>
-        <NavTab to="share">
+        <NavTab to="/share">
           <AddReactionIcon />
           <span>一起分購吧！</span>
         </NavTab>

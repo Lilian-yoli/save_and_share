@@ -12,10 +12,11 @@ const MyPurchasePage = () => {
       setPurchaseList(data);
     }
     fetchMyPurchaseList();
-  }, [])
+  }, []);
 
   const deletePurchase = async (id) => {
-    await PUT('/share/delete-joined-share', null, { params: { matchId: id } })
+    const { data: { data } } = await PUT('/share/delete-joined-share', undefined, { params: { matchId: id } })
+    setPurchaseList(data);
   }
 
   return (
