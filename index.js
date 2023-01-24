@@ -44,6 +44,18 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(PORT, () => {
+// socket.io
+const server = require("http").createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+const { socketCon } = require("./backend/controllers/socket_controller");
+socketCon(io);
+
+server.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
