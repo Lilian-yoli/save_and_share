@@ -4,11 +4,11 @@ const chatMessagesFlow = async (req, res) => {
   const { receiverId } = req.query;
   const senderId = req.user.id;
   const room = generateChatRoom(senderId, receiverId);
-  const historyMessage = await selectMessagesByRoom(room);
+  const historyMessages = await selectMessagesByRoom(room);
   const respondedChatInfo = {
     receiver_id: receiverId,
     sender_id: senderId,
-    history_message: historyMessage,
+    history_messages: historyMessages,
   };
   return res.status(200).send({ data: respondedChatInfo });
 };

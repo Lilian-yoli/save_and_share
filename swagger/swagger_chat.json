@@ -1,0 +1,154 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Save & Share User Api Docs",
+    "termsOfService": "http://swagger.io/terms/",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://54.248.36.249/api/1.0"
+    }
+  ],
+  "paths": {
+    "/chat/chat-messages": {
+      "get": {
+        "tags": [
+          "chat-messages"
+        ],
+        "summary": "get all chat messages between two users",
+        "description": "get all chat messages between two users",
+        "operationId": "chat-messages",
+        "parameters": [
+          {
+            "name": "receiverId",
+            "in": "query",
+            "description": "Get all chat messages between two users through user ids",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chat-message-info"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User without token, or token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Forbidden."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "chat-message-info": {
+        "required": [
+          "receiver_id",
+          "sender_id",
+          "history_message"
+        ],
+        "type": "object",
+        "properties": {
+          "sender_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "receiver_id": {
+            "type": "intger",
+            "example": 2
+          },
+          "history_messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/chat-messages"
+            }
+          }
+        }
+      },
+      "chat-messages": {
+        "required": [
+          "receiver_id",
+          "sender_id",
+          "message",
+          "send_at"
+        ],
+        "type": "object",
+        "properties": {
+          "sender_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "receiver_id": {
+            "type": "integer",
+            "example": 2
+          },
+          "message": {
+            "type": "string",
+            "example": "Hello, I am superman!"
+          },
+          "send_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-12-06T07:50:16.830Z"
+          }
+        }
+      }
+    }
+  }
+}  

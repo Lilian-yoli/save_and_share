@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerUserFile = require("./swagger/swagger_user.json");
 const swaggerShareFile = require("./swagger/swagger_share.json");
+const swaggerChatFile = require("./swagger/swagger_chat.json");
 const { resetSharedTimesJob } = require("./backend/cron/share_cron");
 
 app.use(bodyParser.json());
@@ -19,6 +20,11 @@ app.use(
   "/doc-share",
   swaggerUi.serveFiles(swaggerShareFile),
   swaggerUi.setup(swaggerShareFile)
+);
+app.use(
+  "/doc-chat",
+  swaggerUi.serveFiles(swaggerChatFile),
+  swaggerUi.setup(swaggerChatFile)
 );
 
 // api route
