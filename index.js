@@ -25,6 +25,7 @@ app.use(
 app.use("/api/" + API_VERSION, [
   require("./backend/user/routes"),
   require("./backend/routes/share_route"),
+  require("./backend/routes/chat_route"),
 ]);
 
 // Set up cron jobs
