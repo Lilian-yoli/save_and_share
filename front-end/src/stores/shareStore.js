@@ -1,13 +1,13 @@
-import create from "zustand";
+import { create } from "zustand";
 
 const initialState = {
   foodInfo: {
     name: "",
     category: "",
     food_description: "",
-    image: "",
     expiry_date: null,
   },
+  image: "",
   shareInfo: {
     unit_description: "",
     total_portions: undefined,
@@ -35,5 +35,6 @@ export const useShareStore = create((set) => ({
   saveFoodInfo: (newFoodInfo) => set({ foodInfo: newFoodInfo }),
   saveShareInfo: (newShareInfo) => set({ shareInfo: newShareInfo }),
   saveMeetUpInfo: (newMeetUpInfo) => set({ meetUpInfo: newMeetUpInfo }),
+  saveImgURL: (url) => set({ image: url }),
   resetShareForm: () => set({ ...initialState })
 }))
