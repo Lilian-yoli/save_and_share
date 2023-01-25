@@ -101,7 +101,8 @@
         "required": [
           "receiver_id",
           "sender_id",
-          "history_message"
+          "history_message",
+          "room"
         ],
         "type": "object",
         "properties": {
@@ -118,6 +119,10 @@
             "items": {
               "$ref": "#/components/schemas/chat-messages"
             }
+          },
+          "room": {
+            "type": "string",
+            "example": "1&2room"
           }
         }
       },

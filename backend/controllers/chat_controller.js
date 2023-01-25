@@ -9,6 +9,7 @@ const chatMessagesFlow = async (req, res) => {
     receiver_id: receiverId,
     sender_id: senderId,
     history_messages: historyMessages,
+    room,
   };
   return res.status(200).send({ data: respondedChatInfo });
 };
