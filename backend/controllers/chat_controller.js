@@ -6,7 +6,7 @@ const chatMessagesFlow = async (req, res) => {
   const room = generateChatRoom(senderId, receiverId);
   const historyMessages = await selectMessagesByRoom(room);
   const respondedChatInfo = {
-    receiver_id: receiverId,
+    receiver_id: parseInt(receiverId),
     sender_id: senderId,
     history_messages: historyMessages,
     room,
