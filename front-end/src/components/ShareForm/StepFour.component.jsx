@@ -6,6 +6,7 @@ import { POST } from "../../utils/API";
 
 const StepFour = ({ previous }) => {
   const foodInfo = useShareStore((state) => state.foodInfo)
+  const image = useShareStore((state) => state.image)
   const shareInfo = useShareStore((state) => state.shareInfo)
   const meetUpInfo = useShareStore((state) => state.meetUpInfo)
   const resetForm = useShareStore((state) => state.resetShareForm)
@@ -15,7 +16,7 @@ const StepFour = ({ previous }) => {
   const initiateShare = async () => {
     delete meetUpInfo.meet_up_date;
     delete meetUpInfo.meet_up_time;
-    const form = { ...foodInfo, ...shareInfo, ...meetUpInfo }
+    const form = { ...foodInfo, image, ...shareInfo, ...meetUpInfo }
 
     try {
       await POST('/share/share-launch', form)

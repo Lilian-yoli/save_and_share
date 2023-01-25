@@ -16,7 +16,8 @@ const MySharePage = () => {
   }, [])
 
   const deleteShare = async (id) => {
-    await PUT('/share/delete-launched-share', null, { params: { shareId: id } })
+    const { data: { data } } = await PUT('/share/delete-launched-share', undefined, { params: { shareId: id } });
+    setShareList(data);
   }
 
   return (
