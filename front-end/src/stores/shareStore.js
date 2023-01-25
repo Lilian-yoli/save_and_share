@@ -35,6 +35,6 @@ export const useShareStore = create((set) => ({
   saveFoodInfo: (newFoodInfo) => set({ foodInfo: newFoodInfo }),
   saveShareInfo: (newShareInfo) => set({ shareInfo: newShareInfo }),
   saveMeetUpInfo: (newMeetUpInfo) => set({ meetUpInfo: newMeetUpInfo }),
-  saveImgURL: (url) => set({ image: url }),
+  saveImgURL: (filename) => set({ image: filename }),
   resetShareForm: () => set({ ...initialState })
 }))

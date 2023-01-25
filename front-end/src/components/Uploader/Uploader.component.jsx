@@ -5,6 +5,7 @@ import "./Uploader.styles.scss";
 import { POST } from "../../utils/API";
 import axios from "axios";
 import { useShareStore } from "../../stores/shareStore";
+import { useState } from "react";
 
 const theme = createTheme({
   palette: {
@@ -19,40 +20,50 @@ const theme = createTheme({
 });
 
 const Uploader = ({ color }) => {
-  const saveImgURL = useShareStore((state) => state.saveImgURL);
+  const saveImg = useShareStore((state) => state.saveImg);
+  const [imgURL, setImgUrl] = useState('');
 
   async function uploadToS3(e) {
     const imageFile = e.target.files[0];
-    // const imageFile = new FormData();
-    // imageFile.append('file', e.target.files[0]);
     const filename = e.target.files[0].name;
 
+    // get s3 presigned url
     const { data: { data } } = await POST('/share/upload-image-presignedURL', { filename });
     const { presignedURL } = data;
 
+    // put request to upload image to s3 bucket
     await axios.put(presignedURL, imageFile, {
       headers: {
         "Content-Type": 'image',
       },
     });
 
+    // get filename and presigned url for rendering and saving filename to DB
     const { data: { data: image } } = await POST('/share/get-presignedURL', { filename });
-    saveImgURL(image.presignedURL);
+    saveImg(image.filename);
+    setImgUrl(image.presignedURL);
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <IconButton
-        color={color}
-        className="custom-uploader"
-        aria-label="upload picture"
-        component="label"
-      >
-        <input onChange={uploadToS3} hidden accept="image/*" type="file" name="file" />
-        <PhotoCamera />
-        <p>上傳照片</p>
-      </IconButton>
-    </ThemeProvider>
+    <>
+      <ThemeProvider theme={theme}>
+        <IconButton
+          color={color}
+          className="custom-uploader"
+          aria-label="upload picture"
+          component="label"
+        >
+          <input onChange={uploadToS3} hidden accept="image/*" type="file" name="file" />
+          <PhotoCamera />
+          <p>上傳照片</p>
+        </IconButton>
+      </ThemeProvider>
+
+      {imgURL &&
+        <div className="img-frame">
+          <img src={imgURL} alt="the uploaded" />
+        </div>}
+    </>
   );
 };
 
