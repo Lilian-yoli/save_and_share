@@ -207,7 +207,7 @@
         ],
         "summary": "get basic info of user",
         "description": "get basic info of user",
-        "operationId": "upload-image-presignedURL",
+        "operationId": "get-my-info",
         "responses": {
           "200": {
             "description": "Successful operation",
