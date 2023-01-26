@@ -10,8 +10,7 @@ const selectMessagesByRoom = async (room) => {
       .then((result) => {
         console.log({ selectedResult: result.rows });
         return result.rows;
-      })
-      .catch((e) => log.error("CHAT-MODEL", "Error message: %j", e.stack));
+      });
     return selectedResult;
   } catch (error) {
     log.error("CHAT-MODEL", "Error message: %j", error);
@@ -40,16 +39,23 @@ const saveChatMsgToDB = async ({
         "active",
       ])
       .then((result) => {
-        console.log({ insertedResult: result.rowCount });
-        return result.rowCount;
+        return {
+          command: result.command,
+          rowCount: result.rowCount,
+        };
       });
-    return { data: "OK" };
+    console.log({ insertedResult: insertedResult });
+    if (insertedResult.command == "INSERT" && insertedResult.rowCount == 1) {
+      return { data: "Data inserted!" };
+    } else {
+      return { error: "Data insertion failed." };
+    }
   } catch (error) {
     log.error("CHAT-MODEL", "Error message: %j", error);
-    throw error;
   }
 };
 
 module.exports = {
   selectMessagesByRoom,
+  saveChatMsgToDB,
 };
