@@ -4,11 +4,8 @@ const {
   signUpFlow,
   signInFlow,
   updateMemberTypeFlow,
-  testCors,
+  getMyInfoFlow,
 } = require("./service");
-
-// TESTING: should remove after testing
-router.route("/user/test-cors").post(testCors);
 
 router.route("/user/signup").post(wrapAsync(signUpFlow));
 
@@ -17,5 +14,9 @@ router.route("/user/signin").post(wrapAsync(signInFlow));
 router
   .route("/user/update-membership-type")
   .post(authentication(), wrapAsync(updateMemberTypeFlow));
+
+router
+  .route("/user/get-my-info")
+  .get(authentication(), wrapAsync(getMyInfoFlow));
 
 module.exports = router;
