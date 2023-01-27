@@ -71,7 +71,7 @@ const selectChattedUser = async (userId) => {
         SELECT ui.sender_id, ui.receiver_id, ui.receiver_username, ui.room, ui.send_at, m.username AS sender_username 
         FROM user_info ui INNER JOIN members m ON ui.sender_id = m.id
         WHERE ui.sender_id = $1 OR receiver_id = $1)
-    SELECT cnl.sender_id, cnl.receiver_id, cnl.receiver_username, cnl.sender_username, cnl.room
+    SELECT cnl.sender_id, cnl.receiver_id, cnl.receiver_username, cnl.sender_username
     FROM last_chat_by_room lcbr 
     LEFT JOIN chat_name_list cnl ON cnl.room = lcbr.room AND cnl.send_at = lcbr.last_chat_time 
     ORDER BY lcbr.last_chat_time;`;
@@ -88,8 +88,27 @@ const selectChattedUser = async (userId) => {
   }
 };
 
+const getRoomByUserIds = async (myUserId, theOtherUserId) => {
+  try {
+    const selectedQuery = `SELECT room FROM chat_info 
+    WHERE (sender_id = $1 OR sender_id =$2) AND (receiver_id = $1 OR receiver_id =$2)
+    GROUP BY room;`;
+    const selectedResult = await pgsqlPool
+      .query(selectedQuery, [myUserId, theOtherUserId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      });
+    return selectedResult;
+  } catch (error) {
+    log.error("CHAT-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
 module.exports = {
   selectMessagesByRoom,
   saveChatMsgToDB,
   selectChattedUser,
+  getRoomByUserIds,
 };
