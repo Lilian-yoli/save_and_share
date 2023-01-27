@@ -15,25 +15,37 @@
     }
   ],
   "paths": {
-    "/chat/chat-messages": {
+    "/chat/get-chat-records": {
       "get": {
         "tags": [
-          "chat-messages"
+          "get-chat-records"
         ],
         "summary": "get all chat messages between two users",
         "description": "get all chat messages between two users",
-        "operationId": "chat-messages",
+        "operationId": "get-chat-records",
         "parameters": [
           {
-            "name": "receiverId",
+            "name": "theOtherUserId",
             "in": "query",
-            "description": "Get all chat messages between two users through user ids",
-            "required": false,
+            "description": "The other user id that try to make contact to",
+            "required": true,
             "explode": true,
             "schema": {
               "type": "integer",
               "format": "int64",
               "example": 1
+            }
+          },
+          {
+            "name": "room",
+            "in": "query",
+            "description": "If two users chatted before, they will have chatting room id",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": "1AND2"
             }
           }
         ],
@@ -43,7 +55,82 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/chat-message-info"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/chat-message-info"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User without token, or token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Forbidden."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/get-chat-user-list": {
+      "get": {
+        "tags": [
+          "get-chat-user-list"
+        ],
+        "summary": "get all user list that the user have chatted to",
+        "description": "get all user list that the user have chatted to",
+        "operationId": "get-chat-user-list",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/chat-user-list-array"
+                    }
+                  }
                 }
               }
             }
@@ -101,16 +188,15 @@
         "required": [
           "receiver_id",
           "sender_id",
-          "history_message",
-          "room"
+          "history_message"
         ],
         "type": "object",
         "properties": {
-          "sender_id": {
+          "my_user_id": {
             "type": "integer",
             "example": 1
           },
-          "receiver_id": {
+          "other_user_id": {
             "type": "intger",
             "example": 2
           },
@@ -119,10 +205,6 @@
             "items": {
               "$ref": "#/components/schemas/chat-messages"
             }
-          },
-          "room": {
-            "type": "string",
-            "example": "1&2room"
           }
         }
       },
@@ -130,6 +212,8 @@
         "required": [
           "receiver_id",
           "sender_id",
+          "sender_username",
+          "receiver_username",
           "message",
           "send_at"
         ],
@@ -143,6 +227,14 @@
             "type": "integer",
             "example": 2
           },
+          "sender_username": {
+            "type": "string",
+            "example": "Jack"
+          },
+          "receiver_username": {
+            "type": "string",
+            "example": "Rose"
+          },
           "message": {
             "type": "string",
             "example": "Hello, I am superman!"
@@ -153,7 +245,52 @@
             "example": "2022-12-06T07:50:16.830Z"
           }
         }
+      },
+      "chat-user-list-array": {
+        "required": [
+          "chatted_users"
+        ],
+        "properties": {
+        "chatted_users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/chat-user-list"
+            }
+          }
+        }
+      },
+      "chat-user-list": {
+        "required": [
+          "sender_id",
+          "receiver_id",
+          "sender_username",
+          "receiver_username",
+          "room"
+        ],
+        "type": "object",
+        "properties": {
+          "sender_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "receiver_id": {
+            "type": "integer",
+            "example": 2
+          },
+          "sender_username": {
+            "type": "string",
+            "example": "Jack"
+          },
+          "receiver_username": {
+            "type": "string",
+            "example": "Rose"
+          },
+          "room": {
+            "type": "string",
+            "example": "1AND2"
+          }
+        }
       }
     }
   }
-}  
+} 

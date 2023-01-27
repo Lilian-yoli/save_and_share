@@ -1,4 +1,5 @@
 const { pgsqlPool } = require("./../pgsql_connection");
+const log = require("npmlog");
 
 const selectUserByEmail = async (email) => {
   try {
@@ -88,9 +89,26 @@ const updateMemberType = async (memberTypeDataToDb) => {
   }
 };
 
+const selectUserById = async (userId) => {
+  try {
+    const selectedQuery = "SELECT id FROM members WHERE id = $1;";
+    const selectedResult = await pgsqlPool
+      .query(selectedQuery, [userId])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      });
+    return selectedResult;
+  } catch (error) {
+    log.error("CHAT-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
 module.exports = {
   insertUserDataToDb,
   selectUserByEmail,
   updateMemberType,
   insertUserMemberType,
+  selectUserById,
 };
