@@ -33,19 +33,7 @@
             "schema": {
               "type": "integer",
               "format": "int64",
-              "example": 1
-            }
-          },
-          {
-            "name": "room",
-            "in": "query",
-            "description": "If two users chatted before, they will have chatting room id",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": "1AND2"
+              "example": 2
             }
           }
         ],
@@ -264,8 +252,7 @@
           "sender_id",
           "receiver_id",
           "sender_username",
-          "receiver_username",
-          "room"
+          "receiver_username"
         ],
         "type": "object",
         "properties": {
@@ -284,10 +271,6 @@
           "receiver_username": {
             "type": "string",
             "example": "Rose"
-          },
-          "room": {
-            "type": "string",
-            "example": "1AND2"
           }
         }
       }
