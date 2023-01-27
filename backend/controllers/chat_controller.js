@@ -24,7 +24,7 @@ const chatRecordsFlow = async (req, res) => {
       .status(422)
       .send({ error: "Something went wrong when getting chat records." });
   }
-  const verifiedRoomId = verifiedRoomIdObject.room;
+  const verifiedRoomId = verifiedRoomIdObject.roomId;
   const chatRecords = await selectMessagesByRoom(verifiedRoomId);
   const respondedChatInfo = {
     other_user_id: parseInt(theOtherUserId),
@@ -73,7 +73,7 @@ const generateChatRoom = (senderId, receiverId) => {
 const getChatUserListFlow = async (req, res) => {
   const myUserId = req.user.id;
   const chattedUsers = await selectChattedUser(myUserId);
-  res.status(200).send({ data: { chattedUsers: chattedUsers } });
+  res.status(200).send({ data: { chatted_users: chattedUsers } });
 };
 
 module.exports = {

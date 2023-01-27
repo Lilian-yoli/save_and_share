@@ -6,11 +6,11 @@ const {
 } = require("../controllers/chat_controller");
 
 router
-  .route("/chat/chat-records")
+  .route("/chat/get-chat-records")
   .get(authentication(), wrapAsync(chatRecordsFlow));
 
 router
-  .route("/chat/chat-user-list")
+  .route("/chat/get-chat-user-list")
   .get(authentication(), wrapAsync(getChatUserListFlow));
 
 module.exports = router;

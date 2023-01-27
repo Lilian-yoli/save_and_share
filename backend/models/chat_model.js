@@ -3,6 +3,7 @@ const log = require("npmlog");
 
 const selectMessagesByRoom = async (room) => {
   try {
+    console.log({ selectMessagesByRoom: room });
     const selectQuery = `WITH user_info AS (SELECT ci.sender_id, ci.receiver_id, ci.message, ci.send_at, ci.room, m.username AS receiver_username
         FROM chat_info ci INNER JOIN members m ON ci.receiver_id = m.id)
         SELECT ui.sender_id, ui.receiver_id, ui.message, ui.send_at, ui.receiver_username, m.username AS sender_username from user_info ui
