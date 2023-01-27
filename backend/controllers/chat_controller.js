@@ -1,6 +1,7 @@
 const {
   selectMessagesByRoom,
   selectChattedUser,
+  checkRoomInDb,
 } = require("../models/chat_model");
 const { selectUserById } = require("../user/model");
 const log = require("npmlog");
@@ -9,6 +10,12 @@ const chatRecordsFlow = async (req, res) => {
   const { theOtherUserId, room } = req.query;
   console.log({ room: room });
   const otherUserIdFromDb = await selectUserById(theOtherUserId);
+  if (room) {
+    const roomInDbChecker = await checkRoomInDb(room);
+    if (roomInDbChecker.length === 0) {
+      return res.status(422).send({ error: "No accessibility." });
+    }
+  }
   if (otherUserIdFromDb.length !== 1) {
     return res.status(422).send({ error: "No accessibility." });
   }
@@ -46,6 +53,8 @@ const checkRoomAccess = (room, myUserId, theOtherUserId) => {
     if (!room) {
       return { roomId: generateChatRoom(myUserId, theOtherUserId) };
     } else {
+      const roomFormatChecker = checkRoomFormat(room);
+      if (roomFormatChecker.error) return roomFormatChecker.error;
       const roomUsers = room.split("AND");
       const qualifiedUserIdFromRoom = roomUsers.filter(
         (id) => parseInt(id) == myUserId || parseInt(id) == theOtherUserId

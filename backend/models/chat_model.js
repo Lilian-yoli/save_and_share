@@ -88,8 +88,25 @@ const selectChattedUser = async (userId) => {
   }
 };
 
+const checkRoomInDb = async (room) => {
+  try {
+    const selectedQuery = "SELECT room FROM chat_info WHERE room = $1;";
+    const selectedResult = await pgsqlPool
+      .query(selectedQuery, [room])
+      .then((result) => {
+        console.log({ selectedResult: result.rows });
+        return result.rows;
+      });
+    return selectedResult;
+  } catch (error) {
+    log.error("CHAT-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
 module.exports = {
   selectMessagesByRoom,
   saveChatMsgToDB,
   selectChattedUser,
+  checkRoomInDb,
 };
