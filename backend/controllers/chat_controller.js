@@ -1,4 +1,7 @@
-const { selectMessagesByRoom } = require("../models/chat_model");
+const {
+  selectMessagesByRoom,
+  selectChattedUser,
+} = require("../models/chat_model");
 const { selectUserById } = require("../user/model");
 const log = require("npmlog");
 
@@ -67,11 +70,13 @@ const generateChatRoom = (senderId, receiverId) => {
   }
 };
 
-// const getChatUserListFlow = (req, res) => {
-//   const myUserId = req.user.id
-//   const
-// }
+const getChatUserListFlow = async (req, res) => {
+  const myUserId = req.user.id;
+  const chattedUsers = await selectChattedUser(myUserId);
+  res.status(200).send({ data: { chattedUsers: chattedUsers } });
+};
 
 module.exports = {
   chatRecordsFlow,
+  getChatUserListFlow,
 };
