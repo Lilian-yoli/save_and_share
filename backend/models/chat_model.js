@@ -4,11 +4,7 @@ const log = require("npmlog");
 const selectMessagesByRoom = async (room) => {
   try {
     console.log({ selectMessagesByRoom: room });
-    const selectQuery = `WITH user_info AS (SELECT ci.sender_id, ci.receiver_id, ci.message, ci.send_at, ci.room, m.username AS receiver_username
-        FROM chat_info ci INNER JOIN members m ON ci.receiver_id = m.id)
-        SELECT ui.sender_id, ui.receiver_id, ui.message, ui.send_at, ui.receiver_username, m.username AS sender_username from user_info ui
-        INNER JOIN members m ON ui.sender_id = m.id
-        WHERE ui.room = $1 ORDER BY ui.send_at;`;
+    const selectQuery = `SELECT sender_id, receiver_id, message, send_at FROM chat_info WHERE room = $1 ORDER BY send_at;`;
     const selectedResult = await pgsqlPool
       .query(selectQuery, [room])
       .then((result) => {

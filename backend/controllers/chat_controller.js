@@ -3,14 +3,15 @@ const {
   selectChattedUser,
   getRoomByUserIds,
 } = require("../models/chat_model");
-const { selectUserById } = require("../user/model");
+const { selectUsernsmeById } = require("../user/model");
 
 const chatRecordsFlow = async (req, res) => {
   const { theOtherUserId } = req.query;
-  const otherUserIdFromDb = await selectUserById(theOtherUserId);
+  const otherUsernameFromDb = await selectUsernsmeById(theOtherUserId);
   const myUserId = req.user.id;
+  const myUsername = req.user.username;
   const roomFromDb = await getRoomByUserIds(myUserId, theOtherUserId);
-  if (otherUserIdFromDb.length !== 1 || theOtherUserId == myUserId) {
+  if (otherUsernameFromDb.length !== 1 || theOtherUserId == myUserId) {
     return res.status(422).send({ error: "No accessibility." });
   }
   const verifiedRoom = checkRoomAccess(roomFromDb, myUserId, theOtherUserId);
@@ -20,6 +21,8 @@ const chatRecordsFlow = async (req, res) => {
   const respondedChatInfo = {
     other_user_id: parseInt(theOtherUserId),
     my_user_id: myUserId,
+    other_user_name: otherUsernameFromDb[0].username,
+    my_username: myUsername,
     chat_records: chatRecords,
   };
   return res.status(200).send({ data: respondedChatInfo });
