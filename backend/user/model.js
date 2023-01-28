@@ -89,9 +89,9 @@ const updateMemberType = async (memberTypeDataToDb) => {
   }
 };
 
-const selectUserById = async (userId) => {
+const selectUsernsmeById = async (userId) => {
   try {
-    const selectedQuery = "SELECT id FROM members WHERE id = $1;";
+    const selectedQuery = "SELECT username FROM members WHERE id = $1;";
     const selectedResult = await pgsqlPool
       .query(selectedQuery, [userId])
       .then((result) => {
@@ -110,5 +110,5 @@ module.exports = {
   selectUserByEmail,
   updateMemberType,
   insertUserMemberType,
-  selectUserById,
+  selectUsernsmeById,
 };
