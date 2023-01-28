@@ -10,12 +10,10 @@ import TransactionPage from "./pages/Transaction/Transaction.component";
 import MySharePage from './pages/MyShare/MyShare.component';
 import MyPurchasePage from "./pages/MyPurchase/MyPurchase.component";
 import SearchDetail from "./pages/SearchDetail/SearchDetail.component";
+import ChatPage from "./pages/Chat/Chat.component";
 import { useContext } from "react";
 import { userContext } from "./contexts/userContext";
 import { useSearchStore } from "./stores/searchStore";
-import io from "socket.io-client"
-const socket = io.connect("http://localhost:8877")
-
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useContext(userContext);
   const location = useLocation();
@@ -27,10 +25,6 @@ const ProtectedRoute = ({ children }) => {
 }
 
 function App() {
-  const sendMessage = () => {
-    socket.emit("test_message", {message: "Hello"})
-  }
-  sendMessage();
   const location = useLocation();
   const clearSearch = useSearchStore((state) => state.clearSearchStore);
 
@@ -52,6 +46,11 @@ function App() {
         <Route path="/share" element={
           <ProtectedRoute>
             <SharePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/my-inbox" element={
+          <ProtectedRoute>
+            <ChatPage />
           </ProtectedRoute>
         } />
         <Route path="/my-share" element={
