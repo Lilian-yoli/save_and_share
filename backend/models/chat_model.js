@@ -27,7 +27,7 @@ const saveChatMsgToDB = async ({
 }) => {
   try {
     const insertedQuery =
-      "INSERT INTO chat_info(receiver_id, sender_id, message, send_at, updated, room, status) VALUES($1, $2, $3, $4, $5, $6, $7)";
+      "INSERT INTO chat_info(sender_id, receiver_id, message, send_at, updated, room, status) VALUES($1, $2, $3, $4, $5, $6, $7)";
     const insertedResult = await pgsqlPool
       .query(insertedQuery, [
         sender_id,
