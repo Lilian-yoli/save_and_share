@@ -44,7 +44,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
       {!hasChatted && shareLauncher !== undefined &&
         <div className="user" onClick={() => setChatWith(firstTimeChatUser.id)}>
           <div className="user-avatar">
-            <Avatar sx={{ bgcolor: "#6218fa" }}></Avatar>
+            <Avatar sx={{ bgcolor: "#285E4D" }}></Avatar>
           </div>
           <span className="user-name">{firstTimeChatUser.username}</span>
         </div>
@@ -55,7 +55,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
           return (
             <div className="user" key={chattedUser.username} onClick={() => setChatWith(chattedUser.id)}>
               <div className="user-avatar">
-                <Avatar sx={{ bgcolor: "#6218fa" }}></Avatar>
+                <Avatar sx={{ bgcolor: "#285E4D" }}></Avatar>
               </div>
               <span className="user-name">{chattedUser.username}</span>
             </div>
@@ -76,8 +76,8 @@ const Sidebar = styled.aside`
     display: flex;
     align-items: center;
     padding: 15px 20px;
-    background-color: #3abbbb;
-    color: #edece0;
+    background-color: #80d5d5;
+    color: #272724;
 
     &-name {
       font-weight: 600;

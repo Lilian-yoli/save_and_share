@@ -70,7 +70,7 @@ const ChatPage = () => {
       <ChatSidebar chattedUsers={chatList} currentUser={currentUser} chatWith={chatWith} setChatWith={setChatWith} />
       <div style={{ width: '75%' }}>
         <MainContent>
-          <ChatRecords socket={socket} theOtherUserId={chatWith} />
+          <ChatRecords socket={socket} theOtherUserId={chatWith} currentUserId={currentUser.id} />
         </MainContent>
         <ChatInput socket={socket} sender_id={currentUser.id} receiver_id={chatWith} />
       </div>
@@ -84,6 +84,7 @@ const PageWrapper = styled.main`
 
 const MainContent = styled.div`
   height: calc(100vh - 131px);
+  overflow-y: scroll;
   padding: 15px 25px;
 `
 
