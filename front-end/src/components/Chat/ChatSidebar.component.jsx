@@ -26,6 +26,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
     }
 
     async function getFirstTimeChatUser() {
+      if (!chatWith) return;
       const { data: { data } } = await GET('/chat/get-chat-records', { params: { theOtherUserId: chatWith } });
       const firstTimeChatUser = getUserById(data, chatWith);
       setFirstTimeChatUser(firstTimeChatUser);
