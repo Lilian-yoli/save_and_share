@@ -62,7 +62,7 @@ export default function FadeMenu() {
       >
         {isLoggedIn ? (
           <div>
-            <MenuItem onClick={handleClose} className="customized menu-item">
+            <MenuItem onClick={() => getToPage("my-inbox")} className="customized menu-item">
               你的訊息
             </MenuItem>
             <MenuItem onClick={() => getToPage("my-share")} className="customized menu-item">

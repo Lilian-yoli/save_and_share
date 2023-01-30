@@ -9,11 +9,13 @@ import { JoinFormWrapper, FormContentWrapper } from "./JoinForm.styles";
 import Dialog from "../../components/Dialog/Dialog.component";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useChatStore } from "../../stores/chatStore";
 
 const JoinForm = ({ share_id, shareDetail }) => {
   const { name, description, price, expiry_date, meet_up_datetime, county, district, address, total_portions, unit_description } = shareDetail ?? {};
   const pricePerPortion = Math.round(price / total_portions);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const setShareLauncher = useChatStore((state) => state.setShareLauncher);
 
   const navigate = useNavigate();
   const goToMyJoinedShare = () => {
@@ -23,7 +25,7 @@ const JoinForm = ({ share_id, shareDetail }) => {
 
   const goToChatRoom = () => {
     setIsDialogOpen(false);
-    console.log('go to chat room')
+    navigate('/my-inbox');
   }
 
   const validationSchema = object({
@@ -37,10 +39,12 @@ const JoinForm = ({ share_id, shareDetail }) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       const form = { ...values, share_id: Number(share_id) };
-      await POST('share/share-join', form);
+      const { data: { data } } = await POST('share/share-join', form);
+      const { share_launcher } = data;
+      setShareLauncher({ shareLauncher: share_launcher });
       setIsDialogOpen(true);
     }
-  })
+  });
 
 
   return (
