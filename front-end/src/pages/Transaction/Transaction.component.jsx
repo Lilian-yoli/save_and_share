@@ -5,6 +5,7 @@ import TransactionForm from "../../components/TransactionForm/TransactionForm.co
 import PaymentReview from "../../components/PaymentReview/PaymentReview.component";
 import { TransactionWrapper } from "./Transaction.styles";
 import { useQuery } from "../../utils/useQuery";
+import { POST } from "../../utils/API";
 
 const TransactionPage = () => {
   const [dialogType, setDialogType] = useState(null);
@@ -50,17 +51,21 @@ const TransactionPage = () => {
       return;
     }
 
-    // Get prime
-    TPDirect.card.getPrime((result) => {
+    // Get prime & send prime with amount to backend
+    TPDirect.card.getPrime(async (result) => {
       if (result.status !== 0) {
         alert("get prime error " + result.msg);
         return;
       }
-
-      // TODO: send prime to server, to pay with Pay by Prime API .
-      console.log("SUCCESS, prime: " + result.card.prime);
-      setDialogType("success");
-      openDialog();
+      try {
+        const amount = planType === 'monthly_plan' ? 20 : 100;
+        const form = { amount, prime: result.card.prime };
+        await POST('/tools/tappay-direct-pay', form);
+        setDialogType("success");
+        openDialog();
+      } catch (error) {
+        console.error(error);
+      }
     });
   };
 
