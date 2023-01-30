@@ -85,6 +85,22 @@
               }
             }
           },
+          "422": {
+            "description": "Content cannot process",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "No accessibility."
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server Error",
             "content": {
@@ -188,6 +204,14 @@
             "type": "intger",
             "example": 2
           },
+          "my_username": {
+            "type": "string",
+            "example": "Jack"
+          },
+          "other_user_username": {
+            "type": "string",
+            "example": "Rose"
+          },
           "history_messages": {
             "type": "array",
             "items": {
@@ -214,14 +238,6 @@
           "receiver_id": {
             "type": "integer",
             "example": 2
-          },
-          "sender_username": {
-            "type": "string",
-            "example": "Jack"
-          },
-          "receiver_username": {
-            "type": "string",
-            "example": "Rose"
           },
           "message": {
             "type": "string",
