@@ -12,8 +12,6 @@ That's why we come up with the website "Share & Save" and wish it can let every 
 
 #### 1. clone the project
 ```
-git clone https://github.com/Lilian-yoli/save_and_share.git
-or 
 git clone git@github.com:Lilian-yoli/save_and_share.git
 ```
 
@@ -28,7 +26,6 @@ npm install
 
 #### 3. run the project
 ```
-cd front-end
 npm run start
 ``` 
 
