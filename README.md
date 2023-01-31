@@ -20,6 +20,10 @@ git clone git@github.com:Lilian-yoli/save_and_share.git
 #### 2. install all the dependencies
 ```
 npm install
+cd front-end
+npm install 
+
+* note: add --force after "npm install" if you encounter dependency conflict  
 ```
 
 #### 3. run the project
