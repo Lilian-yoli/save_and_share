@@ -6,6 +6,7 @@ import { POST } from "../../utils/API";
 import axios from "axios";
 import { useShareStore } from "../../stores/shareStore";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const theme = createTheme({
   palette: {
@@ -21,7 +22,18 @@ const theme = createTheme({
 
 const Uploader = ({ color }) => {
   const saveImg = useShareStore((state) => state.saveImg);
+  const existedImg = useShareStore(state => state.image);
   const [imgURL, setImgUrl] = useState('');
+
+  useEffect(() => {
+    if (!existedImg) return;
+    getImgFromS3(existedImg);
+
+    async function getImgFromS3(filename) {
+      const { data: { data: image } } = await POST('/share/get-presignedURL', { filename });
+      setImgUrl(image.presignedURL);
+    }
+  }, [existedImg])
 
   async function uploadToS3(e) {
     const imageFile = e.target.files[0];
