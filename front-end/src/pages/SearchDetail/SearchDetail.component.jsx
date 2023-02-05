@@ -16,7 +16,7 @@ const SearchDetail = () => {
       setData(data)
     }
     fetchDetialById(id);
-  }, [])
+  }, [id])
 
 
   return (
