@@ -1,5 +1,5 @@
 import { TextField, MenuItem } from "@mui/material";
-import { string, object } from "yup";
+import { string, object, date } from "yup";
 import { useFormik } from "formik";
 import { FormfieldWrapper } from "../SignUpForm/SignUpForm.styles";
 import Button from "../Button/Button.component";
@@ -25,9 +25,9 @@ const StepThree = ({ next, previous }) => {
   const validationSchema = object({
     county: string().required("必填"),
     district: string().required("必填"),
-    address: string().required("必填"),
-    meet_up_date: string().nullable("必填").required("必填"),
-    meet_up_time: string().nullable("必填").required("必填"),
+    address: string().trim().required("必填"),
+    meet_up_date: date().nullable("必填").required("必填").min(new Date(), "不得為過去日期").typeError("格式不正確"),
+    meet_up_time: date().nullable("必填").required("必填").typeError("格式不正確"),
   });
 
   const { handleChange, handleSubmit, setFieldValue, values, touched, errors } =
@@ -49,6 +49,7 @@ const StepThree = ({ next, previous }) => {
         values.location = location;
 
         let { meet_up_date, meet_up_time } = values;
+        console.log('4', meet_up_time)
         meet_up_date = dayjs(meet_up_date).format('YYYY-MM-DD');
         const formattedMeetUpTime = dayjs(meet_up_time).format('HH:mm:ss');
         const meet_up_datetime = dayjs(`${meet_up_date} ${formattedMeetUpTime}`).utc(true).format();
@@ -124,8 +125,9 @@ const StepThree = ({ next, previous }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             onChange={(value) => {
-              setFieldValue("meet_up_date", Date.parse(value));
+              setFieldValue("meet_up_date", value);
             }}
+            disablePast={true}
             inputFormat="YYYY/MM/DD"
             value={values.meet_up_date}
             label="面交日期"
@@ -153,10 +155,10 @@ const StepThree = ({ next, previous }) => {
               <TextField
                 id="meet_up_time"
                 name="meet_up_time"
+                {...params}
                 error={touched.meet_up_time && Boolean(errors.meet_up_time)}
                 helperText={touched.meet_up_time && errors.meet_up_time}
                 sx={{ marginTop: "20px" }}
-                {...params}
               />
             )}
           />

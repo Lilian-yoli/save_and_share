@@ -1,7 +1,7 @@
 import { TextField, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useFormik } from "formik";
-import { object, string } from "yup";
+import { object, string, date } from "yup";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Button from "../Button/Button.component";
@@ -21,8 +21,8 @@ const StepOne = ({ next }) => {
 
   const validationSchema = object({
     category: string().required("必填"),
-    name: string().required("必填"),
-    expiry_date: string().nullable().required("必填"),
+    name: string().trim().required("必填"),
+    expiry_date: date().nullable("必填").required("必填").min(new Date(), "不得為過去日期").typeError('格式不正確'),
   });
 
   const { handleChange, handleSubmit, setFieldValue, values, errors, touched } =
@@ -88,8 +88,9 @@ const StepOne = ({ next }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             onChange={(value) => {
-              setFieldValue("expiry_date", Date.parse(value));
+              setFieldValue("expiry_date", value);
             }}
+            disablePast={true}
             inputFormat="YYYY/MM/DD"
             value={values.expiry_date}
             label="食物有限期限"
