@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { object, number, string } from "yup";
+import { object, number, string, ref } from "yup";
 import { useFormik } from "formik";
 import Button from "../Button/Button.component";
 import { FormfieldWrapper } from "../SignUpForm/SignUpForm.styles";
@@ -10,9 +10,9 @@ const StepTwo = ({ next, previous }) => {
   const saveShareInfo = useShareStore((state) => state.saveShareInfo)
 
   const validationSchema = object({
-    unit_description: string().required("必填"),
+    unit_description: string().trim().required("必填"),
     total_portions: number().required("必填").positive("請輸入正整數"),
-    own_portions: number().required("必填").positive("請輸入正整數"),
+    own_portions: number().required("必填").integer("請輸入整數").lessThan(ref("total_portions"), '取用數量須小於總數量'),
     price: number().required("必填").positive("請輸入正整數"),
   });
 

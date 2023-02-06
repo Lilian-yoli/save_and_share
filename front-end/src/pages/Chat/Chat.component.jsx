@@ -16,7 +16,6 @@ const ChatPage = () => {
   const [chatWith, setChatWith] = useState(chatStore.shareLauncher);
 
   useEffect(() => {
-    console.log('heello', socket.id)
     connectSocket();
 
     async function connectSocket() {
@@ -33,7 +32,7 @@ const ChatPage = () => {
       const { data: { data } } = await GET('/user/get-my-info');
       return data;
     }
-  }, [currentUser.id]);
+  }, [currentUser, setCurrentUser]);
 
   // sidebar 
   useEffect(() => {
@@ -60,7 +59,7 @@ const ChatPage = () => {
     };
 
     getChatUser(chatList);
-  }, [chatList])
+  }, [chatList, currentUser.id, chatWith])
 
 
 

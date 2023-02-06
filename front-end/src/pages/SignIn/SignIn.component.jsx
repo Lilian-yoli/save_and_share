@@ -4,7 +4,7 @@ import SignInForm from "../../components/SignInForm/SignInForm.component";
 import FacebookLogin from "react-facebook-login";
 import "./facebook.styles.scss";
 import { POST } from "../../utils/API";
-import { userContext, UserProvider } from "../../contexts/userContext";
+import { userContext } from "../../contexts/userContext";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 
@@ -39,6 +39,7 @@ const SignInPage = () => {
       document.getElementById("google-login-button"),
       { theme: "theme", width: "450", shape: "pill" } // customization attributes
     );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Facebook sing-in

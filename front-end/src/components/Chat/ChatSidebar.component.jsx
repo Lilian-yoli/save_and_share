@@ -43,7 +43,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
   return (
     <Sidebar>
       {!hasChatted && shareLauncher !== undefined &&
-        <div className="user" onClick={() => setChatWith(firstTimeChatUser.id)}>
+        <div className={'user ' + (shareLauncher.id === chatWith ? 'clicked' : '')} onClick={() => setChatWith(firstTimeChatUser.id)}>
           <div className="user-avatar">
             <Avatar sx={{ bgcolor: "#285E4D" }}></Avatar>
           </div>
@@ -54,7 +54,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
       {chatList.length > 0 &&
         chatList.map((chattedUser) => {
           return (
-            <div className="user" key={chattedUser.username} onClick={() => setChatWith(chattedUser.id)}>
+            <div className={'user ' + (chattedUser.id === chatWith ? 'clicked' : '')} key={chattedUser.username} onClick={() => setChatWith(chattedUser.id)}>
               <div className="user-avatar">
                 <Avatar sx={{ bgcolor: "#285E4D" }}></Avatar>
               </div>
@@ -62,7 +62,7 @@ const ChatSidebar = ({ chattedUsers, currentUser, chatWith, setChatWith }) => {
             </div>
           )
         })}
-    </Sidebar>
+    </Sidebar >
   )
 };
 
@@ -79,11 +79,16 @@ const Sidebar = styled.aside`
     padding: 15px 20px;
     background-color: #80d5d5;
     color: #272724;
+    cursor: pointer;
 
     &-name {
       font-weight: 600;
       margin-left: 10px;
     }
+  }
+
+  .user.clicked {
+    background-color: #ced9a9; 
   }
 `
 
