@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const { wrapAsync, authentication } = require("../utils");
-const { tappayDirectPayFlow } = require("../controllers/tools_controller");
+const { tappayPrimePayFlow } = require("../controllers/tools_controller");
 
 router
-  .route("/tools/tappay-direct-pay")
-  .post(authentication(), wrapAsync(tappayDirectPayFlow));
+  .route("/tools/tappay-prime-pay")
+  .post(authentication(), wrapAsync(tappayPrimePayFlow));
 
 module.exports = router;

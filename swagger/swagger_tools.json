@@ -1,0 +1,160 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Save & Share User Api Docs",
+    "termsOfService": "http://swagger.io/terms/",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://54.248.36.249/api/1.0"
+    }
+  ],
+  "paths": {
+    "/tools/tappay-prime-pay": {
+      "get": {
+        "tags": [
+          "tappay-prime-pay"
+        ],
+        "summary": "Do the transaction via Tappay",
+        "description": "User payment through tappay",
+        "operationId": "tappay-prime-pay",
+        "requestBody": {
+          "description": "collect prime, amount, member_id & plan_type to complete transaction",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tappay-prime-pay-requestbody"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/tappay-prime-pay-response"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User without token, or token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Forbidden."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Content cannot process",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "No accessibility."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "tappay-prime-pay-response": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Already paid successfully."
+          }
+        }
+      },
+      "tappay-prime-pay-requestbody": {
+        "required": [
+          "prime",
+          "amount",
+          "member_id",
+          "plan_type"
+        ],
+        "type": "object",
+        "properties": {
+          "prime": {
+            "type": "string",
+            "example": "25f17098f56426f05c19f8453e9c4aa23ea11bf5cd981b2a59e3fc27b82dfe27"
+          },
+          "amount": {
+            "type": "integer",
+            "example": "120"
+          },
+          "member_id": {
+            "type": "integer",
+            "example": "1"
+          },
+          "plan_type": {
+            "type": "string",
+            "example": "monthly_plan"
+          }
+        }
+      }
+    }
+  }
+} 
