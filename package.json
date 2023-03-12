@@ -28,6 +28,7 @@
     "pg": "^8.8.0",
     "query-string": "^7.1.1",
     "socket.io": "^4.5.4",
+    "tappay-nodejs": "^2.0.11",
     "util": "^0.12.4"
   },
   "devDependencies": {
