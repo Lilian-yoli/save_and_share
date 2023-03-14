@@ -1,5 +1,6 @@
 require("dotenv").config();
 const log = require("npmlog");
+const logfile = require("npmlog-file");
 const express = require("express");
 const app = express();
 const { PORT, API_VERSION, FRONTEND_HOST } = process.env;
@@ -73,6 +74,9 @@ socketCon(io);
 
 // TEMP: for testing
 app.use(express.static("public"));
+
+// write everything npmlog has logged thus far to log.txt
+logfile.write(log, "log.txt");
 
 server.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);

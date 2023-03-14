@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "node-cron": "^3.0.2",
     "npmlog": "^7.0.1",
+    "npmlog-file": "^0.1.4",
     "pg": "^8.8.0",
     "query-string": "^7.1.1",
     "socket.io": "^4.5.4",
