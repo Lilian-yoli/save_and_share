@@ -530,7 +530,7 @@
           {
             "name": "matchId",
             "in": "query",
-            "description": "Incativate joined share by share id",
+            "description": "Incativate joined share by match id",
             "required": false,
             "explode": true,
             "schema": {
