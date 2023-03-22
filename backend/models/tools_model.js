@@ -1,7 +1,7 @@
 const { pgsqlPool } = require("../pgsql_connection");
 const log = require("npmlog");
 
-const saveOrderToDb = async ({ prime, amount, member_id, plan_type }) => {
+const saveOrderToDb = async ({ prime, amount, member_id, membership_type }) => {
   try {
     const now = new Date();
     const orderInfoArr = [
@@ -10,7 +10,7 @@ const saveOrderToDb = async ({ prime, amount, member_id, plan_type }) => {
       "active",
       amount,
       false,
-      plan_type,
+      membership_type,
       now,
       now,
     ];
@@ -24,6 +24,7 @@ const saveOrderToDb = async ({ prime, amount, member_id, plan_type }) => {
     return insertedResult;
   } catch (error) {
     log.error("TOOLS-MODEL", "Error message: %j", error);
+    throw error;
   }
 };
 
@@ -41,10 +42,45 @@ const updatePaymentStatus = async (member_id) => {
     return updatedResult;
   } catch (error) {
     log.error("TOOLS-MODEL", "Error message: %j", error);
+    throw error;
+  }
+};
+
+const updateMemberType = async (memberTypeDataToDb) => {
+  try {
+    console.log("updateMembershipType");
+    const {
+      userId,
+      memberType,
+      shared_times,
+      shared_limit_times,
+      expiredDatetime,
+      updated,
+    } = memberTypeDataToDb;
+    const updateQuery =
+      "UPDATE member_types SET member_type = $1, shared_times = $2, shared_limit_times = $3, expired_datetime = $4, updated = $5 where user_id = $6 RETURNING user_id, member_type";
+    const updatedResult = await pgsqlPool
+      .query(updateQuery, [
+        memberType,
+        shared_times,
+        shared_limit_times,
+        expiredDatetime,
+        updated,
+        userId,
+      ])
+      .then((result) => {
+        return result.rows;
+      })
+      .catch((e) => console.error(e.stack));
+    return updatedResult;
+  } catch (error) {
+    log.error("TOOLS-MODEL", "Error message: %j", error);
+    throw error;
   }
 };
 
 module.exports = {
   saveOrderToDb,
   updatePaymentStatus,
+  updateMemberType,
 };
