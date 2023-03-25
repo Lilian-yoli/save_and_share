@@ -59,11 +59,11 @@ const tappayPrimePayFlow = async (req, res) => {
   const memberTypeDataToDb = formMemberTypeDataToUpdate(userId, memberType);
   const updatedMemberType = await updateMemberType(memberTypeDataToDb);
   if (updatedMemberType[0].member_type !== memberType) {
-    throw new Error("The inserted result of member_type is not correct.");
+    throw new Error("The inserted result of membership_type is not correct.");
   }
   return res.status(200).send({
     user_id: updatedMemberType[0].user_id,
-    message: "Membership type have been updated!",
+    message: "Paid successfully and membership type have been updated!",
   });
 };
 
