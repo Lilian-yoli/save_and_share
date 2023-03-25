@@ -24,7 +24,7 @@
         "description": "User payment through tappay",
         "operationId": "tappay-prime-pay",
         "requestBody": {
-          "description": "collect prime, amount, member_id & plan_type to complete transaction",
+          "description": "collect prime, amount, member_id & membership_type to complete transaction",
           "content": {
             "application/json": {
               "schema": {
@@ -92,7 +92,7 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "example": "No accessibility."
+                      "example": "Format error with input data."
                     }
                   }
                 }
@@ -124,7 +124,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "example": "Already paid successfully."
+            "example": "Paid successfully and membership type have been updated!"
           }
         }
       },
@@ -133,7 +133,7 @@
           "prime",
           "amount",
           "member_id",
-          "plan_type"
+          "membership_type"
         ],
         "type": "object",
         "properties": {
@@ -149,7 +149,7 @@
             "type": "integer",
             "example": "1"
           },
-          "plan_type": {
+          "membership_type": {
             "type": "string",
             "example": "monthly_plan"
           }
