@@ -81,3 +81,7 @@ logfile.write(log, "log.txt");
 server.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
+
+module.exports = {
+  server,
+};
