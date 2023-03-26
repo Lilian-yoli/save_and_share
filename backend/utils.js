@@ -60,12 +60,16 @@ const validateInputData = (schema, inputData) => {
 };
 
 const timestampToDate = (timestamp) => {
-  const dashFormatDate = timestamp
-    .toISOString()
-    .replace(/T.*/, "")
-    .split("-")
-    .join("-");
-  return dashFormatDate;
+  try {
+    const dashFormatDate = timestamp
+      .toISOString()
+      .replace(/T.*/, "")
+      .split("-")
+      .join("-");
+    return dashFormatDate;
+  } catch (error) {
+    throw new Error("Something went wrong in fn timestampToDate");
+  }
 };
 
 module.exports = {

@@ -1,17 +1,35 @@
 require("dotenv").config();
-const { PGUSER, PGHOST, PGPASSWORD, PGDATABASE, PGPORT } = process.env;
+const {
+  PGUSER,
+  PGHOST,
+  PGPASSWORD,
+  PGDATABASE,
+  PGPORT,
+  PGDATABASE_TEST,
+  NODE_ENV,
+} = process.env;
 const { Pool } = require("pg");
 const { promisify } = require("util");
+const env = NODE_ENV;
 
 const pgsqlConfig = {
-  user: PGUSER,
-  host: PGHOST,
-  database: PGDATABASE,
-  password: PGPASSWORD,
-  port: PGPORT,
+  development: {
+    user: PGUSER,
+    host: PGHOST,
+    database: PGDATABASE,
+    password: PGPASSWORD,
+    port: PGPORT,
+  },
+  test: {
+    user: PGUSER,
+    host: PGHOST,
+    database: PGDATABASE_TEST,
+    password: PGPASSWORD,
+    port: PGPORT,
+  },
 };
 
-const pgsqlPool = new Pool(pgsqlConfig);
+const pgsqlPool = new Pool(pgsqlConfig[env]);
 
 // TODO: do more research on connect DB
 const connectDb = async (pgsqlPool) => {
