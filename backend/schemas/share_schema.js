@@ -4,7 +4,7 @@ const shareLaunchSchema = {
     name: { type: "string", minLength: 1 },
     category: { enum: ["生鮮魚肉", "蔬菜", "水果", "零食", "飲品", "其他"] },
     food_description: { type: "string" },
-    image: { type: "string", minLength: 1 },
+    image: { type: "string" },
     expiry_date: { type: "string", format: "date" },
     county: { type: "string", minLength: 1 },
     district: { type: "string", minLength: 1 },
