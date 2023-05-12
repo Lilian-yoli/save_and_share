@@ -33,7 +33,7 @@ const presignedImagePUTURL = async (filename) => {
       Bucket: S3_BUCKET,
       Key: filename,
       Expires: 600,
-      ContentType: "image",
+      ContentType: "image/png",
     });
   } catch (error) {
     log.error({ presignedImagePUTURL: error });
